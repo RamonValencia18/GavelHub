@@ -10,6 +10,12 @@ export class LoteNoEncontradoError extends Error {
     }
 }
 
+export class LoteNoAbiertoError extends Error {
+  constructor(id: number) {
+    super(`El lote con id ${id} no está abierto para recibir ofertas`);
+  }
+}
+
 export class OfertaInsuficienteError extends Error {
     constructor(montoOfrecido: number, montoMinimoRequerido: number) {
         super(`La oferta de $${montoOfrecido} fue rechazada. El monto minimo valido es $${montoMinimoRequerido} (oferta actual + incremento minimo).`);
