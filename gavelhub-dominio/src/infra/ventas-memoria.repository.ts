@@ -1,10 +1,11 @@
 import { Injectable } from "@nestjs/common";
+import { VENTAS_SEED } from "src/datos/gavelhub.seed";
 import { EstadoPago, Venta } from "src/dominio/entidades";
 import { VentaRepository } from "src/dominio/ventas.repository";
 
 @Injectable()
 export class VentaMemoriaRepository implements VentaRepository {
-  private ventas: Venta[] = [];
+  private ventas: Venta[] = [...VENTAS_SEED];
   private siguienteId = 1;
 
   async buscarPorLote(loteId: number): Promise<Venta | null> {

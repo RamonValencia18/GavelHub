@@ -1,12 +1,13 @@
 import { Injectable } from "@nestjs/common";
+import { LOTES_SEED, MEDIA_SEED} from "src/datos/gavelhub.seed";
 import { Lote, LoteMedia } from "src/dominio/entidades";
 import { LoteRepository } from "src/dominio/lotes.repository";
 
 @Injectable()
 export class LoteMemoriaRepository implements LoteRepository {
-  private lotes: Lote[] = [];
+  private lotes: Lote[] = [...LOTES_SEED];
   private siguienteId = 1;
-  private medias: LoteMedia[] = [];
+  private medias: LoteMedia[] = [...MEDIA_SEED];
   private siguienteMediaId = 1;
 
   async listar(): Promise<Lote[]> {
