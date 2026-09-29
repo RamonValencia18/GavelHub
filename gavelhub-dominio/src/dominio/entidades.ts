@@ -1,6 +1,7 @@
 export type UsuarioRol = 'Administrador' | 'Participante';
 export type EstadoLote = 'Publicado' | 'Abierto' | 'Cerrado' | 'Retirado'
 export type EstadoOferta = 'Aceptada' | 'Rechazada';
+export type EstadoPago = 'Aceptado' | 'Pendiente';
 export type Imagen = string;
 
 export interface Usuario{
@@ -12,7 +13,7 @@ export interface Usuario{
 
 export interface Venta{
     id: number;
-    estadoPago: boolean; 
+    estadoPago: EstadoPago; 
 }
 
 export interface Lote{
@@ -29,7 +30,7 @@ export interface Lote{
 export interface LoteMedia{
     id: number;
     url: string;
-    descripcion: Imagen;
+    descripcion: String;
 }
 
 export interface Oferta{
