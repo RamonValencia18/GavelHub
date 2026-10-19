@@ -1,0 +1,1 @@
+export const VENTA_REPOSITORY = 'VENTA_REPOSITORY';
