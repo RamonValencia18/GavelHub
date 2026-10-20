@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { LoteRepository } from '../dominio/lotes.repository';
+import type { LoteRepository } from './dominio/lotes.repository';
 import { LOTE_REPOSITORY, LOTE_MEDIA_REPOSITORY } from './lotes.tokens';
-import { Lote, LoteMedia } from '../dominio/entidades';
+import { Lote, LoteMedia } from './dominio/entidades';
 
 @Injectable()
 export class LotesService {

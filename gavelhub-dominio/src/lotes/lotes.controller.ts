@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Patch, Body, Param, NotFoundException } from '@nestjs/common';
 import { LotesService } from './lotes.service';
-import { Lote } from '../dominio/entidades';
+import { Lote } from './dominio/entidades';
 
 @Controller('lotes')
 export class LotesController {
