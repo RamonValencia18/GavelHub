@@ -9,5 +9,115 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
+}
+
+// ------------------------------------------------------
+// ENUMS
+// ------------------------------------------------------
+
+enum UsuarioRol {
+  // Define los roles según tu lógica de negocio (ej. ADMIN, CLIENTE)
+  ADMIN
+  USER
+}
+
+enum EstadoPago {
+  PENDIENTE
+  PAGADO
+  CANCELADO
+}
+
+enum EstadoLote {
+  ACTIVO
+  FINALIZADO
+  CANCELADO
+}
+
+enum EstadoOferta {
+  ACEPTADA
+  RECHAZADA
+  SUPERADA
+}
+
+// ------------------------------------------------------
+// MODELS
+// ------------------------------------------------------
+
+model Usuario {
+  id         String     @id @default(uuid())
+  correo     String     @unique
+  contrasena String
+  rol        UsuarioRol
+
+  // Relaciones
+  ventas Venta[]
+  lotes  Lote[]   @relation("UsuarioLotes")
+  ofertas Oferta[]
+
+  @@map("usuarios")
+}
+
+model Venta {
+  id     String     @id @default(uuid())
+  estado EstadoPago
+
+  // Relación 1 Usuario a 1..n Ventas
+  usuarioId String
+  usuario   Usuario @relation(fields: [usuarioId], references: [id])
+
+  // Relación 1 Lote a 1..n Ventas
+  loteId String
+  lote   Lote   @relation(fields: [loteId], references: [id])
+
+  @@map("ventas")
+}
+
+model Lote {
+  id                 String     @id @default(uuid())
+  descripcion        String
+  estado             EstadoLote
+  precioSalida       Float      // double en UML
+  incrementoMinimo   Float      // double en UML
+  precioReserva      Float      // double en UML
+  fechaHoraApertura  DateTime
+  fechaHoraCierre    DateTime
+
+  // Relaciones
+  usuarioId String?
+  usuario   Usuario? @relation("UsuarioLotes", fields: [usuarioId], references: [id])
+
+  ventas    Venta[]
+  ofertas   Oferta[]
+  mediaList LoteMedia[]
+
+  @@map("lotes")
+}
+
+model LoteMedia {
+  id          String @id @default(uuid())
+  url         String
+  descripcion String // "Imagen" mapeado como String
+
+  // Composición 1 Lote a 1..n LoteMedia
+  loteId String
+  lote   Lote   @relation(fields: [loteId], references: [id], onDelete: Cascade)
+
+  @@map("loteMedias")
+}
+
+model Oferta {
+  id        String       @id @default(uuid())
+  cantidad  Float        // double en UML
+  estado    EstadoOferta
+  fechaHora DateTime
+
+  // Relaciones
+  usuarioId String
+  usuario   Usuario @relation(fields: [usuarioId], references: [id])
+
+  loteId String
+  lote   Lote   @relation(fields: [loteId], references: [id])
+
+  @@map("ofertas")
 }
