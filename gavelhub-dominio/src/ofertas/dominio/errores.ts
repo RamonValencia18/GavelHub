@@ -13,3 +13,10 @@ export class OfertaInvalidaError extends Error {
     );
   }
 }
+export class FueraDePeriodoError extends Error {
+  constructor(loteId: string, estadoActual: string) {
+    super(
+      `El lote ${loteId} no acepta ofertas en este momento. Estado actual: ${estadoActual}.`,
+    );
+  }
+}

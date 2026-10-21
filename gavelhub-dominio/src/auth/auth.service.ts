@@ -27,14 +27,14 @@ export class AuthService {
     const usuario = await this.userRepository.guardar({
       correo: dto.correo,
       passwordHash: await hash(dto.password, 10),
-      rol: Rol.USER, 
+      rol: Rol.USER,
     });
     return aPublico(usuario);
   }
 
   async login(dto: LoginDto): Promise<{ accessToken: string }> {
     const usuario = await this.userRepository.buscarPorCorreo(dto.correo);
-  
+
     if (!usuario || !(await compare(dto.password, usuario.passwordHash))) {
       throw new CredencialesInvalidasError();
     }

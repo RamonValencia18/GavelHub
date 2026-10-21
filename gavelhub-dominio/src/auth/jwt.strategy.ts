@@ -5,17 +5,16 @@ import { JwtPayload } from './dominio/usuario';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-    constructor() {
-        const jwtSecret = process.env.JWT_SECRET || 'default_secret';
+  constructor() {
+    const jwtSecret = process.env.JWT_SECRET || 'default_secret';
 
-        super({
-            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-            ignoreExpiration: false,
-            secretOrKey: jwtSecret,
-        });
-    }
-    validate(payload: JwtPayload): JwtPayload {
-        return payload;
-    }
-
+    super({
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ignoreExpiration: false,
+      secretOrKey: jwtSecret,
+    });
+  }
+  validate(payload: JwtPayload): JwtPayload {
+    return payload;
+  }
 }

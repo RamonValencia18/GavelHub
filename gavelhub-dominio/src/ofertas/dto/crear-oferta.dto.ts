@@ -1,4 +1,9 @@
-export interface CrearOfertaDto {
-  usuarioId: string;
-  cantidad: number;
+import { IsInt, IsString } from 'class-validator';
+
+export class CrearOfertaDto {
+  @IsString()
+  usuarioId!: string;
+
+  @IsInt()
+  cantidad!: number;
 }

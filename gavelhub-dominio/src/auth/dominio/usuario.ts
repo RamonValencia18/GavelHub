@@ -3,15 +3,15 @@ export enum Rol {
   USER = 'USER',
 }
 
-export interface Usuario{
-    id: string;
-    correo: string;
-    passwordHash: string;
-    rol: Rol;
+export interface Usuario {
+  id: string;
+  correo: string;
+  passwordHash: string;
+  rol: Rol;
 }
 export interface JwtPayload {
-    sub: string;
-    correo: string;
-    rol: Rol;
+  sub: string;
+  correo: string;
+  rol: Rol;
 }
 export type UsuarioPublico = Omit<Usuario, 'passwordHash'>;

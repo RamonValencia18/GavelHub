@@ -9,3 +9,10 @@ export class VentaNoEncontradaError extends Error {
     super(`No se encontró la venta con id ${id}`);
   }
 }
+export class MontoInsuficienteError extends Error {
+  constructor(monto: number, montoMinimo: number) {
+    super(
+      `El monto de la oferta (${monto}) es insuficiente. El monto mínimo requerido es ${montoMinimo}.`,
+    );
+  }
+}

@@ -20,21 +20,21 @@ export class VentasService {
   }
 
   async crear(dto: CrearVentaDto): Promise<Venta> {
-    const loteId = dto.loteId;
+    const { loteId, usuarioId } = dto;
     const lote = await this.lotesService.buscarPorId(loteId);
     if (!lote) {
       throw new LoteNoEncontradoError(loteId);
     }
 
-    const ventaExistente = await this.ventaRepo.buscarPorLote(String(loteId));
+    const ventaExistente = await this.ventaRepo.buscarPorLote(loteId);
     if (ventaExistente) {
       throw new VentaExistenteError(loteId);
     }
 
     return this.ventaRepo.guardar({
       estadoPago: 'PENDIENTE',
-      loteId: String(loteId),
-      usuarioId: '1',
+      loteId,
+      usuarioId,
     });
   }
 

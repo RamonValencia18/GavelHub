@@ -67,8 +67,8 @@ model Venta {
   usuarioId String
   usuario   Usuario @relation(fields: [usuarioId], references: [id])
 
-  // Relación 1 Lote a 1..n Ventas
-  loteId String
+  // Relación 1 Lote a 0..1 Venta
+  loteId String @unique
   lote   Lote   @relation(fields: [loteId], references: [id])
 
   @@map("ventas")
@@ -88,7 +88,7 @@ model Lote {
   usuarioId String?
   usuario   Usuario? @relation("UsuarioLotes", fields: [usuarioId], references: [id])
 
-  ventas    Venta[]
+  venta     Venta?
   ofertas   Oferta[]
   mediaList LoteMedia[]
 

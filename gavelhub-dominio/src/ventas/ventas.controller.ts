@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   ConflictException,
   Controller,
@@ -11,7 +10,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { VentasService } from './ventas.service';
-import type { CrearVentaDto } from './dto/crear-venta.dto';
+import { CrearVentaDto } from './dto/crear-venta.dto';
 import type { ActualizarPagoDto } from './dto/actualizar-pago.dto';
 import { LoteNoEncontradoError } from '../lotes/dominio/errores';
 import { VentaExistenteError } from './dominio/errores';
@@ -34,13 +33,6 @@ export class VentasController {
   @Post()
   @HttpCode(201)
   async crear(@Body() dto: CrearVentaDto) {
-    if (typeof dto.loteId !== 'string' || !dto.loteId) {
-      throw new BadRequestException('El campo loteId es obligatorio');
-    }
-    if (typeof dto.usuarioId !== 'string' || !dto.usuarioId) {
-      throw new BadRequestException('El campo usuarioId es obligatorio');
-    }
-
     try {
       return await this.servicio.crear(dto);
     } catch (error) {
