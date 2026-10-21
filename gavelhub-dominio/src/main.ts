@@ -3,6 +3,8 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common/pipes/validation.pipe';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { DominioExceptionFilter } from './comun/filtros/dominio.filters';
+import { RespuestaUniformeInterceptor } from './comun/interceptores/respuesta-uniforme.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -18,6 +20,10 @@ async function bootstrap() {
     },
     credentials: true,
   });
+
+  app.useGlobalFilters(new DominioExceptionFilter());
+
+  app.useGlobalInterceptors(new RespuestaUniformeInterceptor());
 
   app.useGlobalPipes(
     new ValidationPipe({
