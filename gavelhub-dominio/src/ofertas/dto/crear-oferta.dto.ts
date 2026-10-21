@@ -1,4 +1,4 @@
 export interface CrearOfertaDto {
-  usuarioId: number;
+  usuarioId: string;
   cantidad: number;
 }

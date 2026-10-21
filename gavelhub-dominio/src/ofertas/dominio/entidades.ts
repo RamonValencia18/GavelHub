@@ -1,8 +1,10 @@
-export type EstadoOferta = 'Aceptada' | 'Rechazada';
+export type EstadoOferta = 'ACEPTADA' | 'RECHAZADA' | 'SUPERADA';
 
-export interface Oferta{
-    id: number;
-    cantidad: number;
-    estado: EstadoOferta;
-    fechaHora: Date;
+export interface Oferta {
+  id: string;
+  loteId: string;
+  usuarioId: string;
+  cantidad: number;
+  estado: EstadoOferta;
+  fechaHora: Date;
 }

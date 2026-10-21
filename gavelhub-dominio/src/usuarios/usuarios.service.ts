@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { UsuarioRepository } from '../dominio/usuarios.repository';
+import type { UsuarioRepository } from './dominio/usuarios.repository';
 import { USUARIO_REPOSITORY } from './usuarios.tokens';
-import { Usuario } from '../dominio/entidades';
+import { Usuario } from './dominio/entidades';
 
 @Injectable()
 export class UsuariosService {
@@ -14,7 +14,7 @@ export class UsuariosService {
     return this.repo.listar();
   }
 
-  buscarPorId(id: number): Promise<Usuario | null> {
+  buscarPorId(id: string): Promise<Usuario | null> {
     return this.repo.buscarPorId(id);
   }
 

@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Patch, Body, Param, NotFoundException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Body,
+  Param,
+  NotFoundException,
+} from '@nestjs/common';
 import { LotesService } from './lotes.service';
 import { Lote } from './dominio/entidades';
 
@@ -13,7 +21,7 @@ export class LotesController {
 
   @Get(':id')
   async buscar(@Param('id') id: string) {
-    const lote = await this.servicio.buscarPorId(Number(id));
+    const lote = await this.servicio.buscarPorId(id);
     if (!lote) {
       throw new NotFoundException(`Lote con id ${id} no encontrado`);
     }
@@ -26,7 +34,10 @@ export class LotesController {
   }
 
   @Patch(':id/estado')
-  actualizarEstado(@Param('id') id: string, @Body('estado') estado: Lote['estado']) {
-    return this.servicio.actualizarEstado(Number(id), estado);
+  actualizarEstado(
+    @Param('id') id: string,
+    @Body('estado') estado: Lote['estado'],
+  ) {
+    return this.servicio.actualizarEstado(id, estado);
   }
 }

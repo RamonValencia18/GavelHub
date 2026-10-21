@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { LoteRepository } from './dominio/lotes.repository';
-import { LOTE_REPOSITORY, LOTE_MEDIA_REPOSITORY } from './lotes.tokens';
+import { LOTE_REPOSITORY } from './lotes.tokens';
 import { Lote, LoteMedia } from './dominio/entidades';
 
 @Injectable()
@@ -14,7 +14,7 @@ export class LotesService {
     return this.loteRepo.listar();
   }
 
-  buscarPorId(id: number): Promise<Lote | null> {
+  buscarPorId(id: string): Promise<Lote | null> {
     return this.loteRepo.buscarPorId(id);
   }
 
@@ -22,11 +22,11 @@ export class LotesService {
     return this.loteRepo.guardar(datos);
   }
 
-  actualizarEstado(id: number, estado: Lote['estado']): Promise<Lote | null> {
+  actualizarEstado(id: string, estado: Lote['estado']): Promise<Lote | null> {
     return this.loteRepo.actualizarEstado(id, estado);
   }
 
-  obtenerMedia(loteId: number): Promise<LoteMedia[]> {
+  obtenerMedia(loteId: string): Promise<LoteMedia[]> {
     return this.loteRepo.buscarImagenesPorLote(loteId);
   }
 }

@@ -1,17 +1,16 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { OfertaRepository } from '../dominio/ofertas.repository';
+import type { OfertaRepository } from './dominio/ofertas.repository';
 import { OFERTA_REPOSITORY } from './ofertas.tokens';
-import { Oferta } from '../dominio/entidades';
+import { Oferta } from './dominio/entidades';
 import { LotesService } from '../lotes/lotes.service';
 import { UsuariosService } from '../usuarios/usuarios.service';
 import { CrearOfertaDto } from './dto/crear-oferta.dto.js';
+import { OfertaInsuficienteError } from './dominio/errores';
 import {
   LoteNoEncontradoError,
-  UsuarioNoEncontradoError,
   LoteNoAbiertoError,
-  OfertaInsuficienteError,
-} from '../dominio/errores';
-
+} from '../lotes/dominio/errores.js';
+import { UsuarioNoEncontradoError } from '../usuarios/dominio/errores.js';
 @Injectable()
 export class OfertasService {
   constructor(
@@ -21,15 +20,15 @@ export class OfertasService {
     private readonly usuariosService: UsuariosService,
   ) {}
 
-  listarPorLote(loteId: number): Promise<Oferta[]> {
+  listarPorLote(loteId: string): Promise<Oferta[]> {
     return this.ofertaRepo.buscarPorLote(loteId);
   }
 
-  obtenerMayorOferta(loteId: number): Promise<Oferta | null> {
+  obtenerMayorOferta(loteId: string): Promise<Oferta | null> {
     return this.ofertaRepo.obtenerOfertaMayor(loteId);
   }
 
-  async crear(loteId: number, dto: CrearOfertaDto): Promise<Oferta> {
+  async crear(loteId: string, dto: CrearOfertaDto): Promise<Oferta> {
     const lote = await this.lotesService.buscarPorId(loteId);
     if (!lote) {
       throw new LoteNoEncontradoError(loteId);
@@ -40,7 +39,7 @@ export class OfertasService {
       throw new UsuarioNoEncontradoError(dto.usuarioId);
     }
 
-    if (lote.estado !== 'Abierto') {
+    if (lote.estado !== 'ABIERTO') {
       throw new LoteNoAbiertoError(loteId);
     }
 
@@ -54,8 +53,10 @@ export class OfertasService {
     }
 
     return this.ofertaRepo.guardar({
+      loteId,
+      usuarioId: dto.usuarioId,
       cantidad: dto.cantidad,
-      estado: 'Aceptada',
+      estado: 'ACEPTADA',
       fechaHora: new Date(),
     });
   }

@@ -1,22 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { VentaRepository } from '../dominio/ventas.repository';
+import type { VentaRepository } from '../ventas/dominio/ventas.repository';
 import { VENTA_REPOSITORY } from './ventas.tokens';
-import { EstadoPago, Venta } from '../dominio/entidades';
+import { EstadoPago, Venta } from '../ventas/dominio/entidades';
 import { LotesService } from '../lotes/lotes.service';
 import { CrearVentaDto } from './dto/crear-venta.dto';
-import { LoteNoEncontradoError } from '../dominio/errores';
-
-export class VentaExistenteError extends Error {
-  constructor(loteId: number) {
-    super(`El lote con id ${loteId} ya tiene una venta registrada`);
-  }
-}
-
-export class VentaNoEncontradaError extends Error {
-  constructor(id: number) {
-    super(`No se encontró la venta con id ${id}`);
-  }
-}
+import { LoteNoEncontradoError } from '../lotes/dominio/errores';
+import { VentaExistenteError, VentaNoEncontradaError } from './dominio/errores';
 
 @Injectable()
 export class VentasService {
@@ -26,27 +15,33 @@ export class VentasService {
     private readonly lotesService: LotesService,
   ) {}
 
-  async buscarPorLote(loteId: number): Promise<Venta | null> {
+  async buscarPorLote(loteId: string): Promise<Venta | null> {
     return this.ventaRepo.buscarPorLote(loteId);
   }
 
   async crear(dto: CrearVentaDto): Promise<Venta> {
-    const lote = await this.lotesService.buscarPorId(dto.loteId);
+    const loteId = dto.loteId;
+    const lote = await this.lotesService.buscarPorId(loteId);
     if (!lote) {
-      throw new LoteNoEncontradoError(dto.loteId);
+      throw new LoteNoEncontradoError(loteId);
     }
 
-    const ventaExistente = await this.ventaRepo.buscarPorLote(dto.loteId);
+    const ventaExistente = await this.ventaRepo.buscarPorLote(String(loteId));
     if (ventaExistente) {
-      throw new VentaExistenteError(dto.loteId);
+      throw new VentaExistenteError(loteId);
     }
 
     return this.ventaRepo.guardar({
-      estadoPago: 'Pendiente',
+      estadoPago: 'PENDIENTE',
+      loteId: String(loteId),
+      usuarioId: '1',
     });
   }
 
-  async actualizarEstadoPago(id: number, estadoPago: EstadoPago): Promise<Venta> {
+  async actualizarEstadoPago(
+    id: string,
+    estadoPago: EstadoPago,
+  ): Promise<Venta> {
     const venta = await this.ventaRepo.actualizarEstadoPago(id, estadoPago);
     if (!venta) {
       throw new VentaNoEncontradaError(id);

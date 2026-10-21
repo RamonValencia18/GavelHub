@@ -1,27 +1,27 @@
-import { PrismaClient } from '@prisma/client/extension';
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../../prisma/prisma.service';
 import { OfertaRepository } from '../dominio/ofertas.repository';
 import { Oferta } from '../dominio/entidades';
 
+@Injectable()
 export class PrismaOfertaRepository implements OfertaRepository {
-  constructor(private readonly prisma: PrismaClient) {}
+  constructor(private readonly prisma: PrismaService) {}
 
-  async buscarPorLote(loteId: number): Promise<Oferta[]> {
-    return await this.prisma.oferta.findMany({
+  async buscarPorLote(loteId: string): Promise<Oferta[]> {
+    return this.prisma.oferta.findMany({
       where: { loteId },
-      orderBy: { monto: 'desc' }, // Opcional: ordena de mayor a menor oferta
+      orderBy: { cantidad: 'desc' }, // Opcional: ordena de mayor a menor oferta
     });
   }
 
-  async obtenerOfertaMayor(loteId: number): Promise<Oferta | null> {
-    return await this.prisma.oferta.findFirst({
+  async obtenerOfertaMayor(loteId: string): Promise<Oferta | null> {
+    return this.prisma.oferta.findFirst({
       where: { loteId },
-      orderBy: { monto: 'desc' },
+      orderBy: { cantidad: 'desc' },
     });
   }
 
   async guardar(oferta: Omit<Oferta, 'id'>): Promise<Oferta> {
-    return await this.prisma.oferta.create({
-      data: oferta,
-    });
+    return this.prisma.oferta.create({ data: oferta });
   }
 }

@@ -29,9 +29,10 @@ enum EstadoPago {
 }
 
 enum EstadoLote {
-  ACTIVO
-  FINALIZADO
-  CANCELADO
+  PUBLICADO
+  ABIERTO
+  CERRADO
+  RETIRADO
 }
 
 enum EstadoOferta {
@@ -60,7 +61,7 @@ model Usuario {
 
 model Venta {
   id     String     @id @default(uuid())
-  estado EstadoPago
+  estadoPago EstadoPago @map("estado")
 
   // Relación 1 Usuario a 1..n Ventas
   usuarioId String

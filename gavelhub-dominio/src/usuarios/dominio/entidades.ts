@@ -1,8 +1,8 @@
-export type UsuarioRol = 'Administrador' | 'Participante';
+export type UsuarioRol = 'ADMIN' | 'USER';
 
-export interface Usuario{
-    id: number;
-    correo: string;
-    contrasena: string;
-    rol: UsuarioRol;
+export interface Usuario {
+  id: string;
+  correo: string;
+  contrasena: string;
+  rol: UsuarioRol;
 }

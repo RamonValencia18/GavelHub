@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { UsuariosController } from './usuarios.controller';
 import { UsuariosService } from './usuarios.service';
-import { UsuarioMemoriaRepository } from '../infra/usuarios-memoria.repository';
 import { USUARIO_REPOSITORY } from './usuarios.tokens';
+import { PrismaUsuarioRepository } from './infra/usuarios-prisma.repository';
 
 @Module({
   controllers: [UsuariosController],
@@ -10,7 +10,7 @@ import { USUARIO_REPOSITORY } from './usuarios.tokens';
     UsuariosService,
     {
       provide: USUARIO_REPOSITORY,
-      useClass: UsuarioMemoriaRepository,
+      useClass: PrismaUsuarioRepository,
     },
   ],
   exports: [UsuariosService, USUARIO_REPOSITORY],

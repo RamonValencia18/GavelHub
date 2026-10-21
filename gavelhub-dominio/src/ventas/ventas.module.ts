@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { VentasController } from './ventas.controller';
 import { VentasService } from './ventas.service';
-import { VentaMemoriaRepository } from '../infra/ventas-memoria.repository';
 import { VENTA_REPOSITORY } from './ventas.tokens';
 import { LotesModule } from '../lotes/lotes.module';
+import { PrismaVentaRepository } from './ventas-prisma.repository';
 
 @Module({
   imports: [LotesModule],
@@ -12,7 +12,7 @@ import { LotesModule } from '../lotes/lotes.module';
     VentasService,
     {
       provide: VENTA_REPOSITORY,
-      useClass: VentaMemoriaRepository,
+      useClass: PrismaVentaRepository,
     },
   ],
   exports: [VentasService],

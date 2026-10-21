@@ -1,29 +1,25 @@
-import { PrismaClient } from '@prisma/client/extension';
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../../prisma/prisma.service';
 import { UsuarioRepository } from '../dominio/usuarios.repository';
 import { Usuario } from '../dominio/entidades';
 
+@Injectable()
 export class PrismaUsuarioRepository implements UsuarioRepository {
-  constructor(private readonly prisma: PrismaClient) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async listar(): Promise<Usuario[]> {
-    return await this.prisma.usuario.findMany();
+    return this.prisma.usuario.findMany();
   }
 
-  async buscarPorId(id: number): Promise<Usuario | null> {
-    return await this.prisma.usuario.findUnique({
-      where: { id },
-    });
+  async buscarPorId(id: string): Promise<Usuario | null> {
+    return this.prisma.usuario.findUnique({ where: { id } });
   }
 
   async buscarPorCorreo(correo: string): Promise<Usuario | null> {
-    return await this.prisma.usuario.findUnique({
-      where: { correo },
-    });
+    return this.prisma.usuario.findUnique({ where: { correo } });
   }
 
   async guardar(usuario: Omit<Usuario, 'id'>): Promise<Usuario> {
-    return await this.prisma.usuario.create({
-      data: usuario,
-    });
+    return this.prisma.usuario.create({ data: usuario });
   }
 }

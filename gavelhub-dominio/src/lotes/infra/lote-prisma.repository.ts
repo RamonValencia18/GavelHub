@@ -1,47 +1,41 @@
-import { PrismaClient } from '@prisma/client/extension';
-import { LoteRepository } from '../dominio/lotes.repository'; 
-import { Lote, LoteMedia } from '../dominio/entidades';
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../../prisma/prisma.service';
+import { LoteRepository } from '../dominio/lotes.repository';
+import { EstadoLote, Lote, LoteMedia } from '../dominio/entidades';
 
+@Injectable()
 export class PrismaLoteRepository implements LoteRepository {
-  constructor(private readonly prisma: PrismaClient) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async listar(): Promise<Lote[]> {
-    return await this.prisma.lote.findMany();
+    return this.prisma.lote.findMany();
   }
 
-  async buscarPorId(id: number): Promise<Lote | null> {
-    return await this.prisma.lote.findUnique({
-      where: { id },
-    });
+  async buscarPorId(id: string): Promise<Lote | null> {
+    return this.prisma.lote.findUnique({ where: { id } });
   }
 
   async guardar(lote: Omit<Lote, 'id'>): Promise<Lote> {
-    return await this.prisma.lote.create({
-      data: lote,
-    });
+    return this.prisma.lote.create({ data: lote });
   }
 
-  async actualizarEstado(id: number, estado: Lote['estado']): Promise<Lote | null> {
+  async actualizarEstado(id: string, estado: EstadoLote): Promise<Lote | null> {
     try {
       return await this.prisma.lote.update({
         where: { id },
         data: { estado },
       });
-    } catch (error) {
+    } catch {
       // Prisma lanza un error P2025 si el registro no existe al intentar actualizar
       return null;
     }
   }
 
-  async buscarImagenesPorLote(loteId: number): Promise<LoteMedia[]> {
-    return await this.prisma.loteMedia.findMany({
-      where: { loteId },
-    });
+  async buscarImagenesPorLote(loteId: string): Promise<LoteMedia[]> {
+    return this.prisma.loteMedia.findMany({ where: { loteId } });
   }
 
   async guardarImagenes(media: Omit<LoteMedia, 'id'>): Promise<LoteMedia> {
-    return await this.prisma.loteMedia.create({
-      data: media,
-    });
+    return this.prisma.loteMedia.create({ data: media });
   }
 }

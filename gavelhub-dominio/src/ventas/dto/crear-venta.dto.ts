@@ -1,3 +1,4 @@
 export interface CrearVentaDto {
-  loteId: number;
+  loteId: string;
+  usuarioId: number;
 }

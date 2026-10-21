@@ -1,6 +1,13 @@
-import { Controller, Get, Post, Body, Param, NotFoundException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  NotFoundException,
+} from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
-import { Usuario } from '../dominio/entidades';
+import { Usuario } from './dominio/entidades';
 
 @Controller('usuarios')
 export class UsuariosController {
@@ -13,7 +20,7 @@ export class UsuariosController {
 
   @Get(':id')
   async buscar(@Param('id') id: string) {
-    const usuario = await this.servicio.buscarPorId(Number(id));
+    const usuario = await this.servicio.buscarPorId(id);
     if (!usuario) {
       throw new NotFoundException(`Usuario con id ${id} no encontrado`);
     }

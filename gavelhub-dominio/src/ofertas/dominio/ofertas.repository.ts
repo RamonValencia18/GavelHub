@@ -1,7 +1,7 @@
-import { Oferta } from "./entidades";
+import { Oferta } from './entidades';
 
 export interface OfertaRepository {
-  buscarPorLote(loteId: number): Promise<Oferta[]>;
-  obtenerOfertaMayor(loteId: number): Promise<Oferta | null>;
+  buscarPorLote(loteId: string): Promise<Oferta[]>;
+  obtenerOfertaMayor(loteId: string): Promise<Oferta | null>;
   guardar(oferta: Omit<Oferta, 'id'>): Promise<Oferta>;
 }

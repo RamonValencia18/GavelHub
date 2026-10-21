@@ -10,20 +10,23 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { VentasService, VentaExistenteError, VentaNoEncontradaError } from './ventas.service';
+import { VentasService } from './ventas.service';
 import type { CrearVentaDto } from './dto/crear-venta.dto';
 import type { ActualizarPagoDto } from './dto/actualizar-pago.dto';
-import { LoteNoEncontradoError } from '../dominio/errores';
-
+import { LoteNoEncontradoError } from '../lotes/dominio/errores';
+import { VentaExistenteError } from './dominio/errores';
+import { VentaNoEncontradaError } from './dominio/errores';
 @Controller('ventas')
 export class VentasController {
   constructor(private readonly servicio: VentasService) {}
 
   @Get('lote/:loteId')
   async buscarPorLote(@Param('loteId') loteId: string) {
-    const venta = await this.servicio.buscarPorLote(Number(loteId));
+    const venta = await this.servicio.buscarPorLote(loteId);
     if (!venta) {
-      throw new NotFoundException(`No hay venta asociada al lote con id ${loteId}`);
+      throw new NotFoundException(
+        `No hay venta asociada al lote con id ${loteId}`,
+      );
     }
     return venta;
   }
@@ -31,8 +34,11 @@ export class VentasController {
   @Post()
   @HttpCode(201)
   async crear(@Body() dto: CrearVentaDto) {
-    if (!Number.isInteger(dto.loteId)) {
-      throw new BadRequestException('El campo loteId debe ser un entero válido');
+    if (typeof dto.loteId !== 'string' || !dto.loteId) {
+      throw new BadRequestException('El campo loteId es obligatorio');
+    }
+    if (typeof dto.usuarioId !== 'string' || !dto.usuarioId) {
+      throw new BadRequestException('El campo usuarioId es obligatorio');
     }
 
     try {
@@ -54,7 +60,7 @@ export class VentasController {
     @Body() dto: ActualizarPagoDto,
   ) {
     try {
-      return await this.servicio.actualizarEstadoPago(Number(id), dto.estadoPago);
+      return await this.servicio.actualizarEstadoPago(id, dto.estadoPago);
     } catch (error) {
       if (error instanceof VentaNoEncontradaError) {
         throw new NotFoundException(error.message);

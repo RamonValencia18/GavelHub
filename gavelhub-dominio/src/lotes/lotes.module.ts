@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { LotesController } from './lotes.controller';
 import { LotesService } from './lotes.service';
-import { LoteMemoriaRepository } from '../infra/lotes-memoria.repository';
-import { LOTE_REPOSITORY, LOTE_MEDIA_REPOSITORY } from './lotes.tokens';
+import { LOTE_REPOSITORY } from './lotes.tokens';
+import { PrismaLoteRepository } from './infra/lote-prisma.repository';
 
 @Module({
   controllers: [LotesController],
@@ -10,7 +10,7 @@ import { LOTE_REPOSITORY, LOTE_MEDIA_REPOSITORY } from './lotes.tokens';
     LotesService,
     {
       provide: LOTE_REPOSITORY,
-      useClass: LoteMemoriaRepository,
+      useClass: PrismaLoteRepository,
     },
   ],
   exports: [LotesService, LOTE_REPOSITORY],
