@@ -1,33 +1,53 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { USUARIO_REPOSITORY } from './usuarios.tokens';
-import { Usuario } from './dominio/usuario';
-import { RegistroDto } from './dtos/auth.dto';
+import { JwtService } from '@nestjs/jwt';
+import { compare, hash } from 'bcryptjs';
+import { AUTH_USUARIO_REPOSITORY } from './usuarios.tokens';
+import { JwtPayload, Rol, Usuario, UsuarioPublico } from './dominio/usuario';
+import { LoginDto, RegistroDto } from './dtos/auth.dto';
 import type { UsuarioRepository } from './dominio/usuario.repository';
+import {
+  CorreoYaRegistradoError,
+  CredencialesInvalidasError,
+} from './dominio/errores';
 
 @Injectable()
 export class AuthService {
-    constructor(@Inject(USUARIO_REPOSITORY) private readonly userRepository: UsuarioRepository) {}
+  constructor(
+    @Inject(AUTH_USUARIO_REPOSITORY)
+    private readonly userRepository: UsuarioRepository,
+    private readonly jwtService: JwtService,
+  ) {}
 
-   async registrar(dto: RegistroDto): Promise<Usuario> {
-        const usuario: Omit<Usuario, 'id'> = {
-            correo: dto.correo,
-            passwordHash: dto.password,
-            rol: dto.rol,
-        };
-        const usuarioGuardado = await this.userRepository.guardar(usuario);
-        if (!usuarioGuardado) {
-            throw new Error('No se pudo registrar el usuario');
-        }
-        return usuarioGuardado;
-   }
-   async login(correo: string, password: string): Promise<Usuario | null> {
-        const usuario = await this.userRepository.buscarPorCorreo(correo);
-        if (!usuario) {
-            return null;
-        }
-        if (usuario.passwordHash !== password) {
-            return null;
-        }
-        return usuario;
+  async registrar(dto: RegistroDto): Promise<UsuarioPublico> {
+    const existente = await this.userRepository.buscarPorCorreo(dto.correo);
+    if (existente) {
+      throw new CorreoYaRegistradoError(dto.correo);
     }
+
+    const usuario = await this.userRepository.guardar({
+      correo: dto.correo,
+      passwordHash: await hash(dto.password, 10),
+      rol: Rol.USER, 
+    });
+    return aPublico(usuario);
+  }
+
+  async login(dto: LoginDto): Promise<{ accessToken: string }> {
+    const usuario = await this.userRepository.buscarPorCorreo(dto.correo);
+  
+    if (!usuario || !(await compare(dto.password, usuario.passwordHash))) {
+      throw new CredencialesInvalidasError();
+    }
+
+    const payload: JwtPayload = {
+      sub: usuario.id,
+      correo: usuario.correo,
+      rol: usuario.rol,
+    };
+    return { accessToken: await this.jwtService.signAsync(payload) };
+  }
+}
+
+function aPublico(usuario: Usuario): UsuarioPublico {
+  return { id: usuario.id, correo: usuario.correo, rol: usuario.rol };
 }

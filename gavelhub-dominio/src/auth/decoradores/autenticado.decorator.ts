@@ -5,8 +5,8 @@ import { RolesGuard } from '../guards/roles.guard';
 import { Roles } from './roles.decorator';
 
 export function Autenticado(...roles: Rol[]) {
-    return applyDecorators(
-        Roles(...roles),
-        UseGuards(JwtAuthGuard, RolesGuard),
-    );
+  if (roles.length === 0) {
+    return applyDecorators(UseGuards(JwtAuthGuard, RolesGuard));
+  }
+  return applyDecorators(Roles(...roles), UseGuards(JwtAuthGuard, RolesGuard));
 }

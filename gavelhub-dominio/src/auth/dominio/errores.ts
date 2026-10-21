@@ -1,4 +1,4 @@
-export class correoYaRegistradoError extends Error {
+export class CorreoYaRegistradoError extends Error {
   constructor(correo: string) {
     super(`El correo ${correo} ya está registrado`);
   } 

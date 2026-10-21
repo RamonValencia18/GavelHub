@@ -9,9 +9,6 @@ export class RegistroDto {
     @MinLength(8)
     password!: string;
 
-    @IsEnum(Rol)
-    rol!: Rol;
-
 }
 export class LoginDto {
 
@@ -20,4 +17,9 @@ export class LoginDto {
 
     @MinLength(1, { message: 'La contraseña no puede estar vacía' })
     password!: string;
+}
+export class TakenDto {
+    accessToken!: string; //jwt token
+    tokenType!: string; //bearer
+    expiresIn!: number;//expiracion en segundos
 }

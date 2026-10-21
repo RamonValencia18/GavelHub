@@ -16,9 +16,7 @@ export class JwtAuthGuard implements CanActivate {
         }
 
         try {
-            const payload = await this.jwtService.verifyAsync<JwtPayload>(token, {
-                secret: process.env.JWT_SECRET,
-            });
+            const payload = await this.jwtService.verifyAsync<JwtPayload>(token);
             request['user'] = payload;
         } catch {
             throw new UnauthorizedException('Credencial inválida o expirada');

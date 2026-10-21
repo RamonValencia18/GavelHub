@@ -14,3 +14,4 @@ export interface JwtPayload {
     correo: string;
     rol: Rol;
 }
+export type UsuarioPublico = Omit<Usuario, 'passwordHash'>;

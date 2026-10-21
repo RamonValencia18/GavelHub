@@ -2,7 +2,9 @@
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Rol, Usuario } from '../dominio/usuario';
 import { UsuarioRepository } from '../dominio/usuario.repository';
+import { Injectable } from '@nestjs/common/decorators/core/injectable.decorator';
 
+@Injectable()
 export class PrismaUsuarioAuthRepository implements UsuarioRepository {
     constructor(private readonly prisma: PrismaService) { }
 
@@ -14,12 +16,12 @@ export class PrismaUsuarioAuthRepository implements UsuarioRepository {
         return aDominio(fila);
     }
 
-    async guardar(usuario: Omit<Usuario, 'id'>): Promise<Usuario | null> {
+    async guardar(usuario: Omit<Usuario, 'id'>): Promise<Usuario> {
         const fila = await this.prisma.usuario.create({
             data: {
                 correo: usuario.correo,
                 contrasena: usuario.passwordHash,
-                rol: usuario.rol as Rol,
+                rol: usuario.rol,
             },
         });
         return aDominio(fila);
