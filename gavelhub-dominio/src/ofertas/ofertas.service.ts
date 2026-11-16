@@ -5,7 +5,7 @@ import { Oferta } from './dominio/entidades';
 import { LotesService } from '../lotes/lotes.service';
 import { UsuariosService } from '../usuarios/usuarios.service';
 import { CrearOfertaDto } from './dto/crear-oferta.dto.js';
-import { OfertaInsuficienteError } from './dominio/errores';
+import { FueraDePeriodoError, OfertaInsuficienteError } from './dominio/errores';
 import {
   LoteNoEncontradoError,
   LoteNoAbiertoError,
@@ -18,7 +18,7 @@ export class OfertasService {
     private readonly ofertaRepo: OfertaRepository,
     private readonly lotesService: LotesService,
     private readonly usuariosService: UsuariosService,
-  ) {}
+  ) { }
 
   listarPorLote(loteId: string): Promise<Oferta[]> {
     return this.ofertaRepo.buscarPorLote(loteId);
@@ -41,6 +41,10 @@ export class OfertasService {
 
     if (lote.estado !== 'ABIERTO') {
       throw new LoteNoAbiertoError(loteId);
+    }
+    const ahora = new Date();
+    if (ahora < lote.fechaHoraApertura || ahora > lote.fechaHoraCierre) {
+      throw new FueraDePeriodoError(loteId, 'FUERA_DE_PERIODO');
     }
 
     const ofertaMayor = await this.ofertaRepo.obtenerOfertaMayor(loteId);

@@ -1,15 +1,15 @@
 import {
   Controller,
   Get,
-  Post,
-  Body,
   Param,
   NotFoundException,
 } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
-import { Usuario } from './dominio/entidades';
+import { Autenticado } from 'src/auth/decoradores/autenticado.decorator';
+import { Rol } from 'src/auth/dominio/usuario';
 
 @Controller('usuarios')
+@Autenticado(Rol.ADMIN)
 export class UsuariosController {
   constructor(private readonly servicio: UsuariosService) {}
 

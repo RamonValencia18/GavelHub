@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   ConflictException,
   Controller,
@@ -23,7 +22,9 @@ import { OfertaInsuficienteError } from './dominio/errores.js';
 import { Autenticado } from 'src/auth/decoradores/autenticado.decorator';
 import { UsuarioActual } from 'src/auth/decoradores/usuario-actual.decorator';
 
+
 @Controller('lotes/:loteId/ofertas')
+@Autenticado()
 export class OfertasController {
   constructor(private readonly servicio: OfertasService) {}
 
@@ -43,7 +44,6 @@ export class OfertasController {
   
   @Post()
   @HttpCode(201)
-  @Autenticado()
   async crear(
     @Param('loteId', ParseUUIDPipe) loteId: string,
     @UsuarioActual('sub') usuarioId: string,

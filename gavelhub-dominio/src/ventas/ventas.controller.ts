@@ -6,6 +6,7 @@ import {
   HttpCode,
   NotFoundException,
   Param,
+  ParseUUIDPipe,
   Patch,
   Post,
 } from '@nestjs/common';
@@ -24,8 +25,10 @@ import { Rol } from 'src/auth/dominio/usuario';
 export class VentasController {
   constructor(private readonly servicio: VentasService) {}
 
+
   @Get('lote/:loteId')
-  async buscarPorLote(@Param('loteId') loteId: string) {
+  @Autenticado(Rol.ADMIN)
+  async buscarPorLote(@Param('loteId', ParseUUIDPipe) loteId: string) {
     const venta = await this.servicio.buscarPorLote(loteId);
     if (!venta) {
       throw new NotFoundException(
@@ -55,7 +58,7 @@ export class VentasController {
   @Patch(':id/pago')
   @Roles(Rol.ADMIN)
   async actualizarPago(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: ActualizarPagoDto,
   ) {
     try {
