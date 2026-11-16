@@ -18,7 +18,5 @@ export class UsuariosService {
     return this.repo.buscarPorId(id);
   }
 
-  crear(datos: Omit<Usuario, 'id'>): Promise<Usuario> {
-    return this.repo.guardar(datos);
-  }
+  
 }

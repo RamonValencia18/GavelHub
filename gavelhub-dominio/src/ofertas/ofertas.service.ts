@@ -28,15 +28,15 @@ export class OfertasService {
     return this.ofertaRepo.obtenerOfertaMayor(loteId);
   }
 
-  async crear(loteId: string, dto: CrearOfertaDto): Promise<Oferta> {
+  async crear(loteId: string, usuarioId: string, dto: CrearOfertaDto): Promise<Oferta> {
     const lote = await this.lotesService.buscarPorId(loteId);
     if (!lote) {
       throw new LoteNoEncontradoError(loteId);
     }
 
-    const usuario = await this.usuariosService.buscarPorId(dto.usuarioId);
+    const usuario = await this.usuariosService.buscarPorId(usuarioId);
     if (!usuario) {
-      throw new UsuarioNoEncontradoError(dto.usuarioId);
+      throw new UsuarioNoEncontradoError(usuarioId);
     }
 
     if (lote.estado !== 'ABIERTO') {
@@ -54,7 +54,7 @@ export class OfertasService {
 
     return this.ofertaRepo.guardar({
       loteId,
-      usuarioId: dto.usuarioId,
+      usuarioId,
       cantidad: dto.cantidad,
       estado: 'ACEPTADA',
       fechaHora: new Date(),

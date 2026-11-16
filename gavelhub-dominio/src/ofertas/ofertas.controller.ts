@@ -7,18 +7,21 @@ import {
   HttpCode,
   NotFoundException,
   Param,
+  ParseUUIDPipe,
   Post,
   Res,
 } from '@nestjs/common';
 import type { Response } from 'express';
 import { OfertasService } from './ofertas.service';
-import type { CrearOfertaDto } from './dto/crear-oferta.dto.js';
+import { CrearOfertaDto } from './dto/crear-oferta.dto.js';
 import { UsuarioNoEncontradoError } from '../usuarios/dominio/errores.js';
 import {
   LoteNoEncontradoError,
   LoteNoAbiertoError,
 } from '../lotes/dominio/errores.js';
 import { OfertaInsuficienteError } from './dominio/errores.js';
+import { Autenticado } from 'src/auth/decoradores/autenticado.decorator';
+import { UsuarioActual } from 'src/auth/decoradores/usuario-actual.decorator';
 
 @Controller('lotes/:loteId/ofertas')
 export class OfertasController {
@@ -37,20 +40,19 @@ export class OfertasController {
     }
     return oferta;
   }
-
+  
   @Post()
   @HttpCode(201)
+  @Autenticado()
   async crear(
-    @Param('loteId') loteId: string,
+    @Param('loteId', ParseUUIDPipe) loteId: string,
+    @UsuarioActual('sub') usuarioId: string,
     @Body() dto: CrearOfertaDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    if (typeof dto.usuarioId !== 'string' || !dto.usuarioId) {
-      throw new BadRequestException('El campo usuarioId es obligatorio');
-    }
-
+    
     try {
-      const oferta = await this.servicio.crear(loteId, dto);
+      const oferta = await this.servicio.crear(loteId, usuarioId, dto);
       res.setHeader('Location', `/lotes/${loteId}/ofertas/${oferta.id}`);
       return oferta;
     } catch (error) {

@@ -11,11 +11,16 @@ import {
 } from '@nestjs/common';
 import { VentasService } from './ventas.service';
 import { CrearVentaDto } from './dto/crear-venta.dto';
-import type { ActualizarPagoDto } from './dto/actualizar-pago.dto';
+import  { ActualizarPagoDto } from './dto/actualizar-pago.dto';
 import { LoteNoEncontradoError } from '../lotes/dominio/errores';
 import { VentaExistenteError } from './dominio/errores';
 import { VentaNoEncontradaError } from './dominio/errores';
+import { Autenticado } from 'src/auth/decoradores/autenticado.decorator';
+import { Roles } from 'src/auth/decoradores/roles.decorator';
+import { Rol } from 'src/auth/dominio/usuario';
+
 @Controller('ventas')
+@Autenticado()
 export class VentasController {
   constructor(private readonly servicio: VentasService) {}
 
@@ -32,6 +37,7 @@ export class VentasController {
 
   @Post()
   @HttpCode(201)
+  @Roles(Rol.ADMIN)
   async crear(@Body() dto: CrearVentaDto) {
     try {
       return await this.servicio.crear(dto);
@@ -47,6 +53,7 @@ export class VentasController {
   }
 
   @Patch(':id/pago')
+  @Roles(Rol.ADMIN)
   async actualizarPago(
     @Param('id') id: string,
     @Body() dto: ActualizarPagoDto,

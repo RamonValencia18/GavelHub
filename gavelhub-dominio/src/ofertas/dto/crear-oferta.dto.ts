@@ -1,9 +1,8 @@
-import { IsInt, IsString } from 'class-validator';
+import { IsNumber, IsPositive} from 'class-validator';
 
 export class CrearOfertaDto {
-  @IsString()
-  usuarioId!: string;
-
-  @IsInt()
+  
+  @IsNumber({maxDecimalPlaces: 2})
+  @IsPositive()
   cantidad!: number;
 }

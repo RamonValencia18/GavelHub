@@ -27,8 +27,4 @@ export class UsuariosController {
     return usuario;
   }
 
-  @Post()
-  crear(@Body() datos: Omit<Usuario, 'id'>) {
-    return this.servicio.crear(datos);
-  }
 }
