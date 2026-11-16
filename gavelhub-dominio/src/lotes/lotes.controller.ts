@@ -9,11 +9,9 @@ import {
   ParseUUIDPipe,
 } from '@nestjs/common';
 import { LotesService } from './lotes.service';
-import { Lote } from './dominio/entidades';
 import { CrearLoteDto } from './dto/crear-lote.dto';
 import { CambiarEstadoDto } from './dto/cambiar-estado.dto';
 import { Autenticado } from 'src/auth/decoradores/autenticado.decorator';
-import { Roles } from 'src/auth/decoradores/roles.decorator';
 import { Rol } from 'src/auth/dominio/usuario';
 
 @Controller('lotes')
