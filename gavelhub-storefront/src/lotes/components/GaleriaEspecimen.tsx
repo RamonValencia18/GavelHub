@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Search } from 'lucide-react';
 import type { LoteMedia } from '../types/lote';
 import './GaleriaEspecimen.css';
 
@@ -16,8 +17,6 @@ export const GaleriaEspecimen: React.FC<GaleriaEspecimenProps> = ({
   const [indiceSeleccionado, setIndiceSeleccionado] = useState<number>(0);
 
   const imagenActual = mediaList[indiceSeleccionado]?.url || '';
-  const tituloImagen = mediaList[indiceSeleccionado]?.descripcion || 'Vista principal';
-
   return (
     <section className="specimen-gallery">
       <div className="specimen-gallery__main-view">
@@ -34,7 +33,7 @@ export const GaleriaEspecimen: React.FC<GaleriaEspecimenProps> = ({
         )}
 
         <div className="specimen-gallery__macro-badge">
-          <span className="specimen-gallery__macro-icon">🔍</span>
+          <span className="specimen-gallery__macro-icon"><Search size={16} /></span>
           <span>Vista macro 1:1 • Alta resolución</span>
         </div>
 

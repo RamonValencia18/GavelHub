@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { Clock3, Star } from 'lucide-react';
 import type { Lote } from '../types/lote';
 import { formatCurrency } from '../../common/utils/formatters';
 import {
   getEstadoLoteLabel,
-  getRemainingTime,
+  calcularTiempoRestante,
 } from '../../common/utils/loteUtils';
 import '../css/LoteCard.css';
 
@@ -28,6 +29,19 @@ export const LoteCard: React.FC<LoteCardProps> = ({
 
   const imagenPrincipal = mediaList && mediaList.length > 0 ? mediaList[0].url : '';
   const montoVigente = ofertaMasAlta ?? precioSalida;
+  const [ahora, setAhora] = useState(Date.now());
+
+  useEffect(() => {
+    const intervalo = window.setInterval(() => setAhora(Date.now()), 1000);
+    return () => window.clearInterval(intervalo);
+  }, []);
+
+  const tiempo = calcularTiempoRestante(fechaHoraCierre, ahora);
+  const tiempoVisible = tiempo.finalizado
+    ? 'Subasta finalizada'
+    : tiempo.dias > 0
+      ? `Quedan ${tiempo.dias}d ${tiempo.horas}h ${tiempo.minutos}m ${tiempo.segundos}s`
+      : `Quedan ${tiempo.horas}h ${tiempo.minutos}m ${tiempo.segundos}s`;
 
   return (
     <article className="lot-card">
@@ -52,7 +66,7 @@ export const LoteCard: React.FC<LoteCardProps> = ({
           onClick={() => onToggleFavorito(id)}
           aria-label="Seguir lote"
         >
-          ★
+          <Star size={16} fill={esFavorito ? 'currentColor' : 'none'} />
         </button>
       </div>
 
@@ -72,8 +86,8 @@ export const LoteCard: React.FC<LoteCardProps> = ({
         </div>
 
         <div className="lot-card__timer">
-          <span className="lot-card__timer-icon">⏱</span>
-          <span>{getRemainingTime(fechaHoraCierre)}</span>
+          <span className="lot-card__timer-icon"><Clock3 size={14} /></span>
+          <span>{tiempoVisible}</span>
         </div>
       </div>
 

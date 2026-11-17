@@ -9,6 +9,10 @@ export class InMemoryVentaRepository implements VentaRepository {
     return this.ventas.find((venta) => venta.loteId === loteId) ?? null;
   }
 
+  async buscarPorUsuario(usuarioId: string): Promise<Venta[]> {
+    return this.ventas.filter((venta) => venta.usuarioId === usuarioId);
+  }
+
   async guardar(venta: Omit<Venta, 'id'>): Promise<Venta> {
     const nuevaVenta: Venta = { ...venta, id: randomUUID() };
     this.ventas.push(nuevaVenta);

@@ -11,6 +11,10 @@ export class PrismaVentaRepository implements VentaRepository {
     return this.prisma.venta.findFirst({ where: { loteId } });
   }
 
+  async buscarPorUsuario(usuarioId: string): Promise<Venta[]> {
+    return this.prisma.venta.findMany({ where: { usuarioId } });
+  }
+
   async guardar(venta: Omit<Venta, 'id'>): Promise<Venta> {
     return this.prisma.venta.create({ data: venta });
   }

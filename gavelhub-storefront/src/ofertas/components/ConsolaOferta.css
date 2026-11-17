@@ -105,6 +105,25 @@
   color: var(--color-text-muted, #65676e);
 }
 
+.bidding-console__timer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  padding: 0.75rem;
+  border: 1px solid var(--color-border, #e5e2da);
+  border-radius: 8px;
+  background: var(--color-surface-subtle, #f6f3eb);
+  color: var(--color-text-muted, #65676e);
+  font-size: 0.82rem;
+}
+
+.bidding-console__timer strong {
+  color: var(--color-primary, #000922);
+  font-family: var(--font-mono, monospace);
+  font-size: 0.9rem;
+}
+
 .quick-bids-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -175,15 +194,27 @@
   padding: 0.5rem;
 }
 .bidding-console__alert-error {
-  background: #ffdad6;
-  border: 1px solid #ba1a1a;
-  color: #93000a;
-  padding: 0.75rem;
-  border-radius: 8px;
-  font-size: 0.8rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  padding: 0.85rem;
+  border-radius: 10px;
+  font-size: 0.82rem;
   margin-bottom: 1rem;
+}
+
+.bidding-console__alert-error p {
   display: flex;
-  gap: 0.5rem;
+  align-items: flex-start;
+  gap: 0.55rem;
+  margin: 0;
+}
+
+.bidding-console__alert-error p > span {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  line-height: 1.35;
 }
 
 .btn-submit-bid {

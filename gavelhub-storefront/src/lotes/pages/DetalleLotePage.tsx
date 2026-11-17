@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { AlertTriangle, Search, X } from 'lucide-react';
 import { useParams, Link } from 'react-router-dom';
 import { api } from '../../common/api/client';
 import { GaleriaEspecimen } from '../components/GaleriaEspecimen';
@@ -6,16 +7,17 @@ import { HistorialOfertas } from '../../ofertas/components/HistorialOfertas';
 import { ConsolaOferta } from '../../ofertas/components/ConsolaOferta';
 import type { Lote } from '../types/lote';
 import type { Oferta } from '../../ofertas/types/oferta';
+import { useAuth } from '../../features/auth/context/AuthContext';
 import '../css/DetalleLotePage.css';
 
 export const DetalleLotePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const { usuario } = useAuth();
 
   const [lote, setLote] = useState<Lote | null>(null);
   const [ofertas, setOfertas] = useState<Oferta[]>([]);
   const [cargando, setCargando] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [esFavorito, setEsFavorito] = useState<boolean>(false);
 
   // Estado para la confirmación explícita en la pantalla del detalle
   const [mensajeConfirmacion, setMensajeConfirmacion] = useState<string | null>(null);
@@ -43,8 +45,11 @@ export const DetalleLotePage: React.FC = () => {
       }
     } catch (err: any) {
       console.error('Error al consultar el lote:', err);
-      const msg = err.response?.data?.message || 'No fue posible obtener la información del lote solicitado.';
-      setError(Array.isArray(msg) ? msg.join(' • ') : msg);
+      setError(
+        err.response?.status === 404
+          ? 'Este lote no está disponible o fue retirado.'
+          : 'No pudimos cargar la información del lote. Inténtalo nuevamente.'
+      );
     } finally {
       setCargando(false);
     }
@@ -119,7 +124,7 @@ export const DetalleLotePage: React.FC = () => {
               color: '#0050b3'
             }}
           >
-            ✕
+            <X size={16} />
           </button>
         </div>
       )}
@@ -135,7 +140,7 @@ export const DetalleLotePage: React.FC = () => {
       {/* CASO 2: ERROR */}
       {!cargando && error && (
         <div className="lote-state lote-state--error">
-          <span className="lote-state__icon">⚠️</span>
+          <span className="lote-state__icon"><AlertTriangle size={22} /></span>
           <h3>Error de Conexión</h3>
           <p>{error}</p>
         </div>
@@ -144,7 +149,7 @@ export const DetalleLotePage: React.FC = () => {
       {/* CASO 3: LOTE VACÍO / NO ENCONTRADO */}
       {!cargando && !error && !lote && (
         <div className="lote-state lote-state--empty">
-          <span className="lote-state__icon">🔍</span>
+          <span className="lote-state__icon"><Search size={22} /></span>
           <h3>Lote no encontrado</h3>
           <p>El lote especificado no existe o ha sido retirado de la subasta.</p>
         </div>
@@ -162,7 +167,7 @@ export const DetalleLotePage: React.FC = () => {
             />
 
             <section className="lote-info-panel">
-              <span className="lote-info-panel__category">Numismática</span>
+              <span className="lote-info-panel__category">{lote.categoria || 'Colección certificada'}</span>
               <h1 className="lote-info-panel__title">{lote.descripcion}</h1>
 
               <div className="lote-info-panel__specs">
@@ -184,7 +189,7 @@ export const DetalleLotePage: React.FC = () => {
             <HistorialOfertas
               ofertas={ofertas}
               precioSalida={lote.precioSalida}
-              usuarioActualId="4082"
+              usuarioActualId={usuario?.id}
               onRecargar={cargarDetalleYOfertas}
             />
           </div>

@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { AlertTriangle, Gavel } from 'lucide-react';
 import type { Lote } from '../../lotes/types/lote';
 import { useRealizarOferta } from '../hooks/useRealizarOferta';
+import { useAuth } from '../../features/auth/context/AuthContext';
+import { calcularTiempoRestante } from '../../common/utils/loteUtils';
 import './ConsolaOferta.css';
 
 interface ConsolaOfertaProps {
@@ -16,6 +20,7 @@ export const ConsolaOferta: React.FC<ConsolaOfertaProps> = ({
   onOfertaRegistradaExitosamente,
 }) => {
   const { id, estado, precioSalida, incrementoMinimo } = lote;
+  const { estaAutenticado } = useAuth();
   const { enviando, errorMensaje, enviarOferta, limpiarError } = useRealizarOferta();
 
   // Calcular el monto actual y el mínimo requerido
@@ -25,6 +30,12 @@ export const ConsolaOferta: React.FC<ConsolaOfertaProps> = ({
   const [montoInput, setMontoInput] = useState<number>(minimoRequerido);
   const [errorLocal, setErrorLocal] = useState<string | null>(null);
   const [exitoMensaje, setExitoMensaje] = useState<string | null>(null);
+  const [ahora, setAhora] = useState(Date.now());
+
+  useEffect(() => {
+    const intervalo = window.setInterval(() => setAhora(Date.now()), 1000);
+    return () => window.clearInterval(intervalo);
+  }, []);
 
   // Sincronizar el input si la oferta actual del lote cambia dinámicamente
   useEffect(() => {
@@ -43,6 +54,11 @@ export const ConsolaOferta: React.FC<ConsolaOfertaProps> = ({
     limpiarError();
     setErrorLocal(null);
     setExitoMensaje(null);
+
+    if (!estaAutenticado) {
+      setErrorLocal('Debes iniciar sesión como participante para realizar una oferta.');
+      return;
+    }
     setMontoInput((prev) => prev + incrementoMinimo);
   };
 
@@ -89,6 +105,10 @@ export const ConsolaOferta: React.FC<ConsolaOfertaProps> = ({
 
   const estaCerrado = estado === 'CERRADO' || estado === 'RETIRADO';
   const mensajeErrorMostrar = errorLocal || errorMensaje;
+  const tiempo = calcularTiempoRestante(lote.fechaHoraCierre, ahora);
+  const tiempoVisible = tiempo.finalizado
+    ? 'Subasta finalizada'
+    : `${tiempo.dias > 0 ? `${tiempo.dias}d ` : ''}${String(tiempo.horas).padStart(2, '0')}h ${String(tiempo.minutos).padStart(2, '0')}m ${String(tiempo.segundos).padStart(2, '0')}s`;
 
   return (
     <div className="bidding-console">
@@ -110,6 +130,11 @@ export const ConsolaOferta: React.FC<ConsolaOfertaProps> = ({
       <div className="bidding-console__min-required">
         <span>Mínimo requerido:</span>
         <strong>{formatearMoneda(minimoRequerido)}</strong>
+      </div>
+
+      <div className="bidding-console__timer" aria-live="polite">
+        <span>Cierre restante</span>
+        <strong>{tiempoVisible}</strong>
       </div>
 
       <form onSubmit={handleSubmit} className="bidding-console__form">
@@ -172,20 +197,22 @@ export const ConsolaOferta: React.FC<ConsolaOfertaProps> = ({
 
         {/* Despliegue de Alerta de Error */}
         {mensajeErrorMostrar && (
-          <div 
-            className="bidding-console__alert-error" 
-            role="alert"
-            style={{
-              padding: '10px 12px',
-              backgroundColor: '#fff0f0',
-              border: '1px solid #ff4d4f',
-              borderRadius: '4px',
-              color: '#cf1322',
-              fontSize: '0.85rem',
-              marginTop: '10px'
-            }}
-          >
-            <p style={{ margin: 0 }}><strong>[!] Error en la postura:</strong> {mensajeErrorMostrar}</p>
+          <div className="bidding-console__alert-error" role="alert">
+            <p>
+              <AlertTriangle size={15} />
+              <span>
+                <strong>{!estaAutenticado ? 'Necesitas iniciar sesión' : 'No pudimos registrar la oferta'}</strong>
+                <span>{mensajeErrorMostrar}</span>
+              </span>
+            </p>
+            {!estaAutenticado && (
+              <Link
+                to="/login"
+                style={{ display: 'inline-block', marginTop: '8px', fontWeight: 700 }}
+              >
+                Iniciar sesión para ofertar
+              </Link>
+            )}
           </div>
         )}
 
@@ -195,7 +222,7 @@ export const ConsolaOferta: React.FC<ConsolaOfertaProps> = ({
           disabled={estaCerrado || enviando}
           style={{ marginTop: '12px' }}
         >
-          ⚖ {enviando ? 'Enviando oferta...' : `Ofertar ${formatearMoneda(montoInput)}`}
+          <Gavel size={16} /> {enviando ? 'Enviando oferta...' : `Ofertar ${formatearMoneda(montoInput)}`}
         </button>
       </form>
     </div>

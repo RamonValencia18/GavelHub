@@ -19,11 +19,17 @@ import { VentaNoEncontradaError } from './dominio/errores';
 import { Autenticado } from 'src/auth/decoradores/autenticado.decorator';
 import { Roles } from 'src/auth/decoradores/roles.decorator';
 import { Rol } from 'src/auth/dominio/usuario';
+import { UsuarioActual } from 'src/auth/decoradores/usuario-actual.decorator';
 
 @Controller('ventas')
 @Autenticado()
 export class VentasController {
   constructor(private readonly servicio: VentasService) {}
+
+  @Get('mis-lotes')
+  listarMisLotes(@UsuarioActual('sub') usuarioId: string) {
+    return this.servicio.buscarPorUsuario(usuarioId);
+  }
 
   @Get('lote/:loteId')
   @Autenticado(Rol.ADMIN)

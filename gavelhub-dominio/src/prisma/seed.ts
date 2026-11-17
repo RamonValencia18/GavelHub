@@ -106,13 +106,51 @@ async function main() {
       fechaHoraApertura: fechaApertura,
       fechaHoraCierre: new Date(Date.now() + 1000 * 60 * 20),
       usuarioId: admin.id,
+      mediaList: {
+        create: [
+          {
+            url: 'https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?auto=format&fit=crop&w=1200&q=85',
+            descripcion: 'Pluma completa',
+          },
+          {
+            url: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1200&q=85',
+            descripcion: 'Detalle de escritura',
+          },
+        ],
+      },
     },
   });
 
   await prisma.lote.create({
     data: {
+      id: '108e8400-e29b-41d4-a716-446655440108',
+      descripcion: 'Omega Speedmaster Professional Pre-Moon Calibre 321',
+      estado: EstadoLote.ABIERTO,
+      precioSalida: 90000.0,
+      incrementoMinimo: 2500.0,
+      precioReserva: 120000.0,
+      fechaHoraApertura: fechaApertura,
+      fechaHoraCierre: new Date(Date.now() + 1000 * 60 * 60 * 4),
+      usuarioId: admin.id,
+      mediaList: {
+        create: [
+          {
+            url: 'https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=1200&q=85',
+            descripcion: 'Vista frontal',
+          },
+          {
+            url: 'https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=1200&q=85',
+            descripcion: 'Esfera y corona',
+          },
+        ],
+      },
+    },
+  });
+
+  const lote107 = await prisma.lote.create({
+    data: {
       id: '107e8400-e29b-41d4-a716-446655440107',
-      descripcion: 'Montblanc Meisterstück 149 Plumín Bicolor',
+      descripcion: 'Cámara Leica X-E Typ 102 Edición Plateada',
       estado: EstadoLote.CERRADO,
       precioSalida: 30000.0,
       incrementoMinimo: 1000.0,
@@ -120,6 +158,26 @@ async function main() {
       fechaHoraApertura: new Date(Date.now() - 86400000),
       fechaHoraCierre: new Date(Date.now() - 3600000),
       usuarioId: admin.id,
+      mediaList: {
+        create: [
+          {
+            url: 'https://images.unsplash.com/photo-1794314816818-fcde3993833e?auto=format&fit=crop&w=1200&q=85',
+            descripcion: 'Cámara y estuche',
+          },
+          {
+            url: 'https://images.unsplash.com/photo-1794314816818-fcde3993833e?auto=format&fit=crop&w=1200&q=85',
+            descripcion: 'Vista frontal',
+          },
+        ],
+      },
+    },
+  });
+
+  await prisma.venta.create({
+    data: {
+      loteId: lote107.id,
+      usuarioId: postor4082.id,
+      estadoPago: 'PENDIENTE',
     },
   });
 

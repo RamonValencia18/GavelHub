@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { AlertTriangle, RefreshCw, Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { api } from '../../common/api/client';
 import { LoteCard } from '../components/LoteCard';
 import { LotesFilterBar } from '../components/LotesFilterBar';
 import type { Lote } from '../types/lote';
@@ -11,86 +13,42 @@ export const ExplorarLotesPage: React.FC = () => {
   const [busqueda, setBusqueda] = useState<string>('');
   const [filtroEstado, setFiltroEstado] = useState<string>('TODOS');
   const [orden, setOrden] = useState<string>('proximo');
-  const [favoritos, setFavoritos] = useState<Record<string, boolean>>({});
+  const [favoritos, setFavoritos] = useState<Record<string, boolean>>(() => {
+    const ids: string[] = JSON.parse(localStorage.getItem('gavelhub_seguidos') || '[]');
+    return Object.fromEntries(ids.map((id) => [id, true]));
+  });
 
   // Los 4 estados de UI exigidos
   const [lotes, setLotes] = useState<Lote[]>([]);
   const [cargando, setCargando] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const cargarLotes = async () => {
-      try {
-        setCargando(true);
-        setError(null);
+  const cargarLotes = useCallback(async () => {
+    try {
+      setCargando(true);
+      setError(null);
 
-        // Simulación de respuesta de API alineada con Prisma
-        await new Promise((res) => setTimeout(res, 600));
-
-        const datosPrisma: Lote[] = [
-          {
-            id: '109e8400-e29b-41d4-a716-446655440109',
-            descripcion: 'Centenario 50 Pesos Oro Ley .900 (1943) NGC MS64',
-            estado: 'ABIERTO',
-            precioSalida: 50000,
-            incrementoMinimo: 1500,
-            precioReserva: 65000,
-            fechaHoraApertura: new Date().toISOString(),
-            fechaHoraCierre: new Date(Date.now() + 1000 * 60 * 60 * 48).toISOString(),
-            mediaList: [],
-            ofertas: [],
-          },
-          {
-            id: '109e8400-e29b-41d4-a716-446655440109',
-            descripcion: 'Pluma Fuente Antigua de Colección Celuloide',
-            estado: 'ABIERTO',
-            precioSalida: 15000,
-            incrementoMinimo: 500,
-            precioReserva: 20000,
-            fechaHoraApertura: new Date().toISOString(),
-            fechaHoraCierre: new Date(Date.now() + 1000 * 60 * 20).toISOString(),
-            mediaList: [],
-            ofertas: [],
-          },
-          {
-            id: '109e8400-e29b-41d4-a716-446655440109',
-            descripcion: 'Omega Speedmaster Professional Pre-Moon Calibre 321',
-            estado: 'ABIERTO',
-            precioSalida: 90000,
-            incrementoMinimo: 2500,
-            precioReserva: 120000,
-            fechaHoraApertura: new Date().toISOString(),
-            fechaHoraCierre: new Date(Date.now() + 1000 * 60 * 60 * 4).toISOString(),
-            mediaList: [],
-            ofertas: [],
-          },
-          {
-            id: '109e8400-e29b-41d4-a716-446655440109',
-            descripcion: 'Montblanc Meisterstück 149 Plumín Bicolor',
-            estado: 'CERRADO',
-            precioSalida: 30000,
-            incrementoMinimo: 1000,
-            precioReserva: 40000,
-            fechaHoraApertura: new Date(Date.now() - 86400000).toISOString(),
-            fechaHoraCierre: new Date(Date.now() - 3600000).toISOString(),
-            mediaList: [],
-            ofertas: [],
-          },
-        ];
-
-        setLotes(datosPrisma);
-      } catch (err) {
-        setError('No fue posible conectar con el servicio de subastas.');
-      } finally {
-        setCargando(false);
-      }
-    };
-
-    cargarLotes();
+      const respuesta = await api.get('/lotes');
+      const datos = respuesta.data?.datos ?? respuesta.data;
+      setLotes(Array.isArray(datos) ? datos : []);
+    } catch {
+      setError('GavelHub no pudo consultar el catálogo en este momento.');
+    } finally {
+      setCargando(false);
+    }
   }, []);
 
+  useEffect(() => {
+    void cargarLotes();
+  }, [cargarLotes]);
+
   const handleToggleFavorito = (id: string) => {
-    setFavoritos((prev) => ({ ...prev, [id]: !prev[id] }));
+    setFavoritos((prev) => {
+      const siguiente = { ...prev, [id]: !prev[id] };
+      const ids = Object.entries(siguiente).filter(([, activo]) => activo).map(([loteId]) => loteId);
+      localStorage.setItem('gavelhub_seguidos', JSON.stringify(ids));
+      return siguiente;
+    });
   };
 
   const handleVerDetalle = (id: string) => {
@@ -135,23 +93,28 @@ export const ExplorarLotesPage: React.FC = () => {
       {/* CASO 2: ERROR */}
       {!cargando && error && (
         <div className="catalog-state catalog-state--error">
-          <span className="catalog-state__icon">⚠️</span>
-          <h3>Error al cargar los lotes</h3>
-          <p>{error}</p>
-          <button
-            type="button"
-            className="btn-retry"
-            onClick={() => window.location.reload()}
-          >
-            Reintentar
-          </button>
+          <div className="catalog-state__icon"><AlertTriangle size={26} /></div>
+          <div className="catalog-state__copy">
+            <span className="catalog-state__eyebrow">Servicio temporalmente no disponible</span>
+            <h3>El catálogo no pudo cargarse</h3>
+            <p>{error}</p>
+            <button
+              type="button"
+              className="btn-retry"
+              onClick={() => void cargarLotes()}
+              disabled={cargando}
+            >
+              <RefreshCw size={16} />
+              Reintentar
+            </button>
+          </div>
         </div>
       )}
 
       {/* CASO 3: LISTA VACÍA */}
       {!cargando && !error && lotesFiltrados.length === 0 && (
         <div className="catalog-state catalog-state--empty">
-          <span className="catalog-state__icon">🔍</span>
+          <span className="catalog-state__icon"><Search size={22} /></span>
           <h3>No se encontraron lotes</h3>
           <p>
             No hay subastas que coincidan con los criterios de búsqueda o el filtro seleccionado.

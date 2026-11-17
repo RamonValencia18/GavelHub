@@ -8,11 +8,17 @@ export class PrismaLoteRepository implements LoteRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async listar(): Promise<Lote[]> {
-    return this.prisma.lote.findMany();
+    return this.prisma.lote.findMany({
+      include: { mediaList: true, ofertas: true },
+      orderBy: { fechaHoraCierre: 'asc' },
+    });
   }
 
   async buscarPorId(id: string): Promise<Lote | null> {
-    return this.prisma.lote.findUnique({ where: { id } });
+    return this.prisma.lote.findUnique({
+      where: { id },
+      include: { mediaList: true, ofertas: true, usuario: true, venta: true },
+    });
   }
 
   async guardar(lote: Omit<Lote, 'id'>): Promise<Lote> {

@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../features/auth/context/AuthContext';
+import { Gavel, User } from 'lucide-react';
+import './AppHeader.css';
 
 export const AppHeader: React.FC = () => {
   const { usuario, estaAutenticado, logout } = useAuth();
@@ -21,7 +23,7 @@ export const AppHeader: React.FC = () => {
     <header className="app-header">
       <div className="app-header__container">
         <Link to="/" className="app-header__brand" style={{ textDecoration: 'none', color: 'inherit' }}>
-          <span className="app-header__logo">⚖</span>
+          <span className="app-header__logo"><Gavel size={18} /></span>
           <span className="app-header__title">GavelHub</span>
         </Link>
         
@@ -50,7 +52,7 @@ export const AppHeader: React.FC = () => {
           {estaAutenticado ? (
             <div className="app-header__user-session" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <span className="app-header__user-badge">
-                👤 {obtenerEtiquetaUsuario()}
+                <User size={15} /> {obtenerEtiquetaUsuario()}
               </span>
               <button 
                 onClick={logout}

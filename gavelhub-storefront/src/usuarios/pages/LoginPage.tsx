@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { AlertTriangle, ArrowRight, Eye, EyeOff, LockKeyhole, Mail } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../../common/api/client';
 import { useAuth } from '../../features/auth/context/AuthContext';
@@ -64,7 +65,7 @@ export const LoginPage: React.FC = () => {
                 // Navegar a la sala de lotes
                 navigate('/lotes');
             } else {
-                setErrorServidor('El servidor devolvió respuesta 200 pero no se encontró la credencial JWT en datos.accessToken.');
+                setErrorServidor('No pudimos iniciar tu sesión. Intenta nuevamente.');
             }
         } catch (err: any) {
             // Extraer el mensaje devuelto por NestJS (puede ser string o Array de strings)
@@ -73,17 +74,17 @@ export const LoginPage: React.FC = () => {
             if (respuestaBackend) {
                 if (Array.isArray(respuestaBackend)) {
                     // Si NestJS devuelve un arreglo de errores de validación DTO
-                    setErrorServidor(respuestaBackend.join(' • '));
+                    setErrorServidor('Revisa los datos ingresados e intenta nuevamente.');
                 } else {
                     // Si NestJS devuelve un mensaje directo en texto
-                    setErrorServidor(respuestaBackend);
+                    setErrorServidor('Las credenciales no son correctas. Revisa tu correo y contraseña.');
                 }
             } else if (err.response?.status === 401) {
-                setErrorServidor('Correo o contraseña incorrectos. Verifique sus credenciales.');
+                setErrorServidor('Correo o contraseña incorrectos.');
             } else if (!err.response) {
-                setErrorServidor('No se pudo establecer conexión con el servidor central de GavelHub.');
+                setErrorServidor('GavelHub no está disponible por el momento. Inténtalo más tarde.');
             } else {
-                setErrorServidor('Ocurrió un error inesperado al procesar la solicitud.');
+                setErrorServidor('No pudimos procesar tu solicitud. Inténtalo nuevamente.');
             }
         } finally {
             setCargando(false);
@@ -179,7 +180,7 @@ export const LoginPage: React.FC = () => {
                         {/* Banner de error proveniente del servidor o de red */}
                         {errorServidor && (
                             <div className="auth-field-error-box" style={{ marginBottom: '16px', padding: '12px' }}>
-                                <span>[!]</span>
+                                <AlertTriangle size={14} />
                                 <span>{errorServidor}</span>
                             </div>
                         )}
@@ -200,7 +201,7 @@ export const LoginPage: React.FC = () => {
                                     className={`auth-input-box ${errores.correo ? 'auth-input-box--error' : ''
                                         }`}
                                 >
-                                    <span className="auth-input-box__icon">@</span>
+                                    <span className="auth-input-box__icon"><Mail size={16} /></span>
                                     <input
                                         id="login-correo"
                                         type="email"
@@ -216,7 +217,7 @@ export const LoginPage: React.FC = () => {
                                 </div>
                                 {errores.correo ? (
                                     <div className="auth-field-error-box">
-                                        <span>[!]</span>
+                                        <span><AlertTriangle size={14} /></span>
                                         <span>{errores.correo}</span>
                                     </div>
                                 ) : (
@@ -244,7 +245,7 @@ export const LoginPage: React.FC = () => {
                                     className={`auth-input-box ${errores.contrasena ? 'auth-input-box--error' : ''
                                         }`}
                                 >
-                                    <span className="auth-input-box__icon">*</span>
+                                    <span className="auth-input-box__icon"><LockKeyhole size={16} /></span>
                                     <input
                                         id="login-password"
                                         type={mostrarContrasena ? 'text' : 'password'}
@@ -263,12 +264,12 @@ export const LoginPage: React.FC = () => {
                                         className="auth-input-box__action"
                                         onClick={() => setMostrarContrasena(!mostrarContrasena)}
                                     >
-                                        {mostrarContrasena ? 'Ocultar' : 'Mostrar'}
+                                        {mostrarContrasena ? <EyeOff size={15} /> : <Eye size={15} />}
                                     </button>
                                 </div>
                                 {errores.contrasena && (
                                     <div className="auth-field-error-box">
-                                        <span>[!]</span>
+                                        <AlertTriangle size={14} />
                                         <span>{errores.contrasena}</span>
                                     </div>
                                 )}
@@ -288,7 +289,7 @@ export const LoginPage: React.FC = () => {
                             {/* Botón Entrar */}
                             <button type="submit" className="auth-btn-gold" disabled={cargando}>
                                 <span>{cargando ? 'Verificando credenciales...' : 'Entrar a mi cuenta'}</span>
-                                <span>→</span>
+                                <ArrowRight size={18} />
                             </button>
 
                             <div className="auth-divider">

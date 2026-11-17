@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { AlertTriangle, BadgeCheck, Eye, EyeOff, LockKeyhole, Mail } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { api } from '../../common/api/client';
 import '../css/RegistroPage.css';
 
 export const RegistroPage: React.FC = () => {
@@ -60,10 +62,29 @@ export const RegistroPage: React.FC = () => {
         return Object.keys(nuevosErrores).length === 0;
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const [errorServidor, setErrorServidor] = useState<string | null>(null);
+    const [registrando, setRegistrando] = useState(false);
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!validarFormulario()) return;
-        navigate('/lotes');
+        try {
+            setRegistrando(true);
+            setErrorServidor(null);
+            await api.post('/auth/registrar', {
+                correo: correo.trim(),
+                password: contrasena,
+            });
+            navigate('/login');
+        } catch (error: any) {
+            setErrorServidor(
+                error.response?.status === 409
+                    ? 'Este correo ya tiene una cuenta registrada.'
+                    : 'No pudimos crear tu cuenta. Revisa los datos e inténtalo nuevamente.'
+            );
+        } finally {
+            setRegistrando(false);
+        }
     };
 
     return (
@@ -95,7 +116,7 @@ export const RegistroPage: React.FC = () => {
 
                         <div className="auth-check-list">
                             <div className="auth-check-item">
-                                <div className="auth-check-item__icon">OK</div>
+                                <div className="auth-check-item__icon"><BadgeCheck size={17} /></div>
                                 <div>
                                     <h3 className="auth-feature-card__title">
                                         Participación anónima garantizada
@@ -108,7 +129,7 @@ export const RegistroPage: React.FC = () => {
                             </div>
 
                             <div className="auth-check-item">
-                                <div className="auth-check-item__icon">OK</div>
+                                <div className="auth-check-item__icon"><BadgeCheck size={17} /></div>
                                 <div>
                                     <h3 className="auth-feature-card__title">
                                         Lotes verificados por especialistas
@@ -121,7 +142,7 @@ export const RegistroPage: React.FC = () => {
                             </div>
 
                             <div className="auth-check-item">
-                                <div className="auth-check-item__icon">OK</div>
+                                <div className="auth-check-item__icon"><BadgeCheck size={17} /></div>
                                 <div>
                                     <h3 className="auth-feature-card__title">
                                         Entregas aseguradas y custodia en bóveda
@@ -153,6 +174,12 @@ export const RegistroPage: React.FC = () => {
                         <p className="auth-form__subtitle">
                             Completa tus datos para habilitar tu paleta digital de postor.
                         </p>
+                        {errorServidor && (
+                            <div className="auth-field-error-box" style={{ marginBottom: '16px', padding: '12px' }}>
+                                <AlertTriangle size={14} />
+                                <span>{errorServidor}</span>
+                            </div>
+                        )}
 
                         <form className="auth-form-body" onSubmit={handleSubmit} noValidate>
                             {/* Campo: Nombre Completo */}
@@ -188,7 +215,7 @@ export const RegistroPage: React.FC = () => {
                                 </div>
                                 {errores.nombre && (
                                     <div className="auth-field-error-box">
-                                        <span>[!]</span>
+                                        <AlertTriangle size={14} />
                                         <span>{errores.nombre}</span>
                                     </div>
                                 )}
@@ -209,7 +236,7 @@ export const RegistroPage: React.FC = () => {
                                     className={`auth-input-box auth-input-box--white ${errores.correo ? 'auth-input-box--error' : ''
                                         }`}
                                 >
-                                    <span className="auth-input-box__icon">@</span>
+                                    <span className="auth-input-box__icon"><Mail size={16} /></span>
                                     <input
                                         id="reg-correo"
                                         type="email"
@@ -222,12 +249,12 @@ export const RegistroPage: React.FC = () => {
                                         }}
                                     />
                                     {correoValido && (
-                                        <span style={{ color: '#c99a2e', fontWeight: 700 }}>[V]</span>
+                                        <BadgeCheck size={16} color="#c99a2e" />
                                     )}
                                 </div>
                                 {errores.correo && (
                                     <div className="auth-field-error-box">
-                                        <span>[!]</span>
+                                        <AlertTriangle size={14} />
                                         <span>{errores.correo}</span>
                                     </div>
                                 )}
@@ -248,7 +275,7 @@ export const RegistroPage: React.FC = () => {
                                     className={`auth-input-box auth-input-box--white ${errores.contrasena ? 'auth-input-box--error' : ''
                                         }`}
                                 >
-                                    <span className="auth-input-box__icon">*</span>
+                                    <span className="auth-input-box__icon"><LockKeyhole size={16} /></span>
                                     <input
                                         id="reg-contrasena"
                                         type={mostrarContrasena ? 'text' : 'password'}
@@ -266,7 +293,7 @@ export const RegistroPage: React.FC = () => {
                                         className="auth-input-box__action"
                                         onClick={() => setMostrarContrasena(!mostrarContrasena)}
                                     >
-                                        Ver
+                                        {mostrarContrasena ? <EyeOff size={15} /> : <Eye size={15} />}
                                     </button>
                                 </div>
 
@@ -294,7 +321,7 @@ export const RegistroPage: React.FC = () => {
 
                                 {errores.contrasena && (
                                     <div className="auth-field-error-box">
-                                        <span>[!]</span>
+                                        <AlertTriangle size={14} />
                                         <span>{errores.contrasena}</span>
                                     </div>
                                 )}
@@ -314,7 +341,7 @@ export const RegistroPage: React.FC = () => {
                                     </label>
                                     {(noCoinciden || errores.confirmarContrasena) && (
                                         <span className="auth-field__hint-right auth-field__hint-right--error">
-                                            [No coincide]
+                                            No coincide
                                         </span>
                                     )}
                                 </div>
@@ -324,7 +351,7 @@ export const RegistroPage: React.FC = () => {
                                             : ''
                                         }`}
                                 >
-                                    <span className="auth-input-box__icon">*</span>
+                                    <span className="auth-input-box__icon"><LockKeyhole size={16} /></span>
                                     <input
                                         id="reg-confirmar"
                                         type={mostrarContrasena ? 'text' : 'password'}
@@ -341,7 +368,7 @@ export const RegistroPage: React.FC = () => {
 
                                 {(noCoinciden || errores.confirmarContrasena) && (
                                     <div className="auth-field-error-box">
-                                        <span>[!]</span>
+                                        <AlertTriangle size={14} />
                                         <span>
                                             {errores.confirmarContrasena ||
                                                 'Las contraseñas no coinciden. Asegúrate de escribir exactamente la misma contraseña que ingresaste arriba.'}
@@ -369,15 +396,15 @@ export const RegistroPage: React.FC = () => {
                                 </label>
                                 {errores.terminos && (
                                     <div className="auth-field-error-box">
-                                        <span>[!]</span>
+                                        <AlertTriangle size={14} />
                                         <span>{errores.terminos}</span>
                                     </div>
                                 )}
                             </div>
 
                             {/* Botón de envío */}
-                            <button type="submit" className="auth-btn-gold">
-                                <span>Crear cuenta y habilitar paleta</span>
+                            <button type="submit" className="auth-btn-gold" disabled={registrando}>
+                                <span>{registrando ? 'Creando cuenta...' : 'Crear cuenta y habilitar paleta'}</span>
                             </button>
 
                             <div className="auth-switch-text">

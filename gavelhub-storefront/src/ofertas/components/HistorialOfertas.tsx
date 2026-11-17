@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Gavel, RefreshCw } from 'lucide-react';
 import type { Oferta } from '../types/oferta';
 import './HistorialOfertas.css';
 
@@ -50,7 +51,7 @@ export const HistorialOfertas: React.FC<HistorialOfertasProps> = ({
       <div className="bid-history__header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
           <div className="bid-history__title-block">
-            <span className="bid-history__gavel-icon">⚖</span>
+            <span className="bid-history__gavel-icon"><Gavel size={17} /></span>
             <h2 className="bid-history__title">Historial público de ofertas</h2>
           </div>
           <p className="bid-history__subtitle">
@@ -81,7 +82,7 @@ export const HistorialOfertas: React.FC<HistorialOfertasProps> = ({
             }}
           >
             <span style={{ display: 'inline-block', transform: actualizando ? 'rotate(360deg)' : 'none', transition: 'transform 0.6s ease' }}>
-              ↻
+              <RefreshCw size={14} />
             </span>
             <span>{actualizando ? 'Actualizando...' : 'Actualizar'}</span>
           </button>

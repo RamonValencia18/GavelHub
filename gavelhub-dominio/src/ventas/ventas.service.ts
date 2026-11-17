@@ -25,6 +25,10 @@ export class VentasService {
     return this.ventaRepo.buscarPorLote(loteId);
   }
 
+  async buscarPorUsuario(usuarioId: string): Promise<Venta[]> {
+    return this.ventaRepo.buscarPorUsuario(usuarioId);
+  }
+
   async crear(dto: CrearVentaDto): Promise<Venta> {
     const { loteId, usuarioId } = dto;
     const lote = await this.lotesService.buscarPorId(loteId);

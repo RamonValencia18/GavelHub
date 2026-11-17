@@ -31,25 +31,25 @@ export const ofertasService = {
     } catch (error: any) {
       // Manejo estricto de excepciones lanzadas por OfertasController
       if (error.response) {
-        const { status, data } = error.response;
+        const { status } = error.response;
+
+        if (status === 401) {
+          throw new Error('Inicia sesión para realizar una oferta.');
+        }
 
         // 409 Conflict: OfertaInsuficienteError o LoteNoAbiertoError
         if (status === 409) {
-          throw new Error(
-            data.message || 'La oferta fue rechazada por regla de negocio del servidor central.'
-          );
+          throw new Error('Tu oferta no fue aceptada. Revisa el monto mínimo e inténtalo nuevamente.');
         }
 
         // 404 Not Found: LoteNoEncontradoError o UsuarioNoEncontradoError
         if (status === 404) {
-          throw new Error(
-            data.message || 'El lote o el participante no existen en el sistema.'
-          );
+          throw new Error('Este lote ya no está disponible o tu sesión no pudo verificarse.');
         }
       }
 
       throw new Error(
-        'No se pudo conectar con el servidor central de subastas. Verifique su red.'
+        'No pudimos completar tu solicitud en este momento. Inténtalo de nuevo.'
       );
     }
   },

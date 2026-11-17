@@ -1,0 +1,131 @@
+.app-header {
+  height: 72px;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.app-header__container {
+  max-width: 1200px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.app-header__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--color-primary);
+}
+
+.app-header__logo {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 7px;
+  background: var(--color-primary);
+  color: #e7b642;
+  font-size: 17px;
+}
+
+.app-header__title {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.app-header__nav {
+  height: 100%;
+  display: flex;
+  align-items: stretch;
+  gap: 34px;
+}
+
+.app-header__link {
+  display: flex;
+  align-items: center;
+  color: #555b69;
+  border-bottom: 2px solid transparent;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.app-header__link--active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-secondary);
+}
+
+.app-header__user {
+  min-width: 150px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.app-header__user-badge {
+  color: var(--color-primary);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.app-header__logout-btn,
+.app-header__link--login {
+  border-radius: 7px;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.app-header__link--login {
+  min-height: 38px;
+  padding: 0 15px;
+  background: var(--color-primary);
+  color: white !important;
+  border: 0;
+}
+
+.app-header__logout-btn {
+  height: 34px;
+  padding: 0 10px;
+  background: transparent;
+  color: var(--color-primary) !important;
+  border: 1px solid var(--color-border) !important;
+  cursor: pointer;
+}
+
+@media (max-width: 820px) {
+  .app-header {
+    height: auto;
+  }
+
+  .app-header__container {
+    min-height: 64px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .app-header__nav {
+    order: 3;
+    width: 100%;
+    height: 48px;
+    justify-content: space-around;
+  }
+
+  .app-header__link {
+    font-size: 12px;
+  }
+
+  .app-header__user {
+    min-width: 0;
+  }
+}

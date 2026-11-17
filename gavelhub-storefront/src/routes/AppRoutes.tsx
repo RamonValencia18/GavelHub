@@ -4,6 +4,8 @@ import { ExplorarLotesPage } from '../lotes/pages/ExplorarLotesPage';
 import { DetalleLotePage } from '../lotes/pages/DetalleLotePage';
 import { LoginPage } from '../usuarios/pages/LoginPage';
 import { RegistroPage } from '../usuarios/pages/RegistroPage';
+import { MisSeguidosPage } from '../lotes/pages/MisSeguidosPage';
+import { MisGanadosPage } from '../ventas/pages/MisGanadosPage';
 
 export const AppRoutes: React.FC = () => {
   return (
@@ -22,6 +24,9 @@ export const AppRoutes: React.FC = () => {
 
       {/* Vista al formulario de registro de un nuevo usuario*/}
       <Route path="/registro" element={<RegistroPage />} />
+
+      <Route path="/seguimiento" element={<MisSeguidosPage />} />
+      <Route path="/ganados" element={<MisGanadosPage />} />
 
       {/* Pantalla 404 para rutas inexistentes */}
       <Route
