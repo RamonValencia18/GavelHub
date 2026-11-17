@@ -13,6 +13,7 @@ export interface LoteMedia {
 export interface Lote {
   id: string;
   descripcion: string;
+  categoria?: string | null;
   estado: EstadoLote;
   precioSalida: number;
   incrementoMinimo: number;

@@ -1,5 +1,5 @@
 import React from 'react';
-import './LotesFilterBar.css';
+import '../css/LotesFilterBar.css';
 
 interface LotesFilterBarProps {
   busqueda: string;

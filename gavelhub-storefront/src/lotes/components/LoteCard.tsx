@@ -1,7 +1,11 @@
 import React from 'react';
 import type { Lote } from '../types/lote';
-import type { EstadoLote } from '../../common/types/enums';
-import './LoteCard.css';
+import { formatCurrency } from '../../common/utils/formatters';
+import {
+  getEstadoLoteLabel,
+  getRemainingTime,
+} from '../../common/utils/loteUtils';
+import '../css/LoteCard.css';
 
 interface LoteCardProps {
   lote: Lote;
@@ -25,41 +29,6 @@ export const LoteCard: React.FC<LoteCardProps> = ({
   const imagenPrincipal = mediaList && mediaList.length > 0 ? mediaList[0].url : '';
   const montoVigente = ofertaMasAlta ?? precioSalida;
 
-  const formatearMoneda = (monto: number) => {
-    return new Intl.NumberFormat('es-MX', {
-      style: 'currency',
-      currency: 'MXN',
-      maximumFractionDigits: 0,
-    }).format(monto);
-  };
-
-  const obtenerEtiquetaEstado = (est: EstadoLote) => {
-    switch (est) {
-      case 'ABIERTO':
-        return 'Abierto';
-      case 'PUBLICADO':
-        return 'Abre pronto';
-      case 'CERRADO':
-        return 'Cerrado';
-      case 'RETIRADO':
-        return 'Retirado';
-      default:
-        return est;
-    }
-  };
-
-  const calcularTiempoRestante = (cierre: string | Date) => {
-    const ahora = new Date().getTime();
-    const limite = new Date(cierre).getTime();
-    const diferencia = limite - ahora;
-
-    if (diferencia <= 0) return 'Finalizado';
-
-    const horas = Math.floor(diferencia / (1000 * 60 * 60));
-    const minutos = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
-    return `Quedan ${horas}h ${minutos}m`;
-  };
-
   return (
     <article className="lot-card">
       <div className="lot-card__media">
@@ -74,7 +43,7 @@ export const LoteCard: React.FC<LoteCardProps> = ({
         )}
 
         <span className={`lot-card__badge lot-card__badge--${estado.toLowerCase()}`}>
-          {obtenerEtiquetaEstado(estado)}
+          {getEstadoLoteLabel(estado)}
         </span>
 
         <button
@@ -96,7 +65,7 @@ export const LoteCard: React.FC<LoteCardProps> = ({
               {estado === 'CERRADO' ? 'Monto final' : 'Oferta actual'}
             </span>
             <span className="lot-card__price-amount">
-              {formatearMoneda(montoVigente)}
+              {formatCurrency(montoVigente)}
             </span>
           </div>
           <span className="lot-card__bids-count">{totalOfertas} ofertas</span>
@@ -104,7 +73,7 @@ export const LoteCard: React.FC<LoteCardProps> = ({
 
         <div className="lot-card__timer">
           <span className="lot-card__timer-icon">⏱</span>
-          <span>{calcularTiempoRestante(fechaHoraCierre)}</span>
+          <span>{getRemainingTime(fechaHoraCierre)}</span>
         </div>
       </div>
 

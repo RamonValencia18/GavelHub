@@ -1,0 +1,167 @@
+.navbar {
+  display: flex;
+  min-height: 72px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 42px;
+  background: #fffdf8;
+  border-bottom: 1px solid #e8e4d8;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #17213a;
+  text-decoration: none;
+}
+
+.navbar-mark {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border-radius: 6px;
+  color: #e7b642;
+  background: #07132f;
+}
+
+.navbar-brand strong,
+.navbar-brand small,
+.navbar-user strong,
+.navbar-user small {
+  display: block;
+}
+
+.navbar-brand strong {
+  font: 700 18px Georgia, serif;
+  line-height: 1;
+}
+
+.navbar-brand small {
+  margin-top: 3px;
+  color: #77776f;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.navbar-links {
+  display: flex;
+  align-self: stretch;
+  gap: 42px;
+}
+
+.navbar-links a {
+  display: grid;
+  place-items: center;
+  color: #555b69;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+}
+
+.navbar-links a.active {
+  color: #111a31;
+  border-color: #e5b638;
+}
+
+.navbar-session {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.navbar-server-time {
+  color: #77776f;
+  font-size: 10px;
+  text-align: right;
+}
+
+.navbar-server-time span {
+  display: block;
+}
+
+.navbar-server-time i {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 5px;
+  border-radius: 50%;
+  background: #bd8f18;
+}
+
+.navbar-server-time strong {
+  display: block;
+  margin-top: 3px;
+  color: #20283a;
+  font: 600 11px ui-monospace, Consolas, monospace;
+}
+
+.navbar-divider {
+  width: 1px;
+  height: 34px;
+  background: #dedbd1;
+}
+
+.navbar-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.navbar-user img,
+.navbar-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.navbar-user img {
+  object-fit: cover;
+}
+
+.navbar-avatar {
+  display: grid;
+  place-items: center;
+  color: white;
+  background: #17213a;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.navbar-user strong {
+  color: #20283a;
+  font-size: 11px;
+}
+
+.navbar-user small {
+  margin-top: 2px;
+  color: #94731d;
+  font-size: 9px;
+}
+
+@media (max-width: 850px) {
+  .navbar {
+    padding: 0 20px;
+  }
+
+  .navbar-links {
+    gap: 14px;
+  }
+
+  .navbar-session {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .navbar-links {
+    gap: 10px;
+  }
+
+  .navbar-links a {
+    font-size: 11px;
+  }
+}
