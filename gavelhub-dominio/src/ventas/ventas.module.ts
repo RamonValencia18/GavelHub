@@ -4,7 +4,7 @@ import { VentasService } from './ventas.service';
 import { VENTA_REPOSITORY } from './ventas.tokens';
 import { LotesModule } from '../lotes/lotes.module';
 import { PrismaVentaRepository } from './ventas-prisma.repository';
-import {OfertasModule} from "../ofertas/ofertas.module";
+import { OfertasModule } from '../ofertas/ofertas.module';
 @Module({
   imports: [LotesModule, OfertasModule],
   controllers: [VentasController],
@@ -14,7 +14,6 @@ import {OfertasModule} from "../ofertas/ofertas.module";
       provide: VENTA_REPOSITORY,
       useClass: PrismaVentaRepository,
     },
-    
   ],
   exports: [VentasService],
 })

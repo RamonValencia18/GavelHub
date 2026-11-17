@@ -17,6 +17,4 @@ export class UsuariosService {
   buscarPorId(id: string): Promise<Usuario | null> {
     return this.repo.buscarPorId(id);
   }
-
-  
 }

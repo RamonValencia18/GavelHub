@@ -5,7 +5,11 @@ import { EstadoPago, Venta } from '../ventas/dominio/entidades';
 import { LotesService } from '../lotes/lotes.service';
 import { CrearVentaDto } from './dto/crear-venta.dto';
 import { LoteNoEncontradoError } from '../lotes/dominio/errores';
-import { MontoInsuficienteError, VentaExistenteError, VentaNoEncontradaError } from './dominio/errores';
+import {
+  MontoInsuficienteError,
+  VentaExistenteError,
+  VentaNoEncontradaError,
+} from './dominio/errores';
 import { OfertasService } from 'src/ofertas/ofertas.service';
 
 @Injectable()
@@ -15,7 +19,7 @@ export class VentasService {
     private readonly ventaRepo: VentaRepository,
     private readonly lotesService: LotesService,
     private readonly ofertasService: OfertasService,
-  ) { }
+  ) {}
 
   async buscarPorLote(loteId: string): Promise<Venta | null> {
     return this.ventaRepo.buscarPorLote(loteId);
@@ -32,10 +36,13 @@ export class VentasService {
     if (ventaExistente) {
       throw new VentaExistenteError(loteId);
     }
-    
+
     const mayor = await this.ofertasService.obtenerMayorOferta(loteId);
     if (!mayor || mayor.cantidad < lote.precioReserva) {
-      throw new MontoInsuficienteError(mayor?.cantidad ?? 0, lote.precioReserva);
+      throw new MontoInsuficienteError(
+        mayor?.cantidad ?? 0,
+        lote.precioReserva,
+      );
     }
     return this.ventaRepo.guardar({
       estadoPago: 'PENDIENTE',

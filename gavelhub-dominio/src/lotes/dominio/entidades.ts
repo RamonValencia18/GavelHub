@@ -1,4 +1,9 @@
-export const ESTADO_LOTE = ['PUBLICADO', 'ABIERTO', 'CERRADO', 'RETIRADO'] as const;
+export const ESTADO_LOTE = [
+  'PUBLICADO',
+  'ABIERTO',
+  'CERRADO',
+  'RETIRADO',
+] as const;
 export type EstadoLote = (typeof ESTADO_LOTE)[number];
 
 export interface Lote {

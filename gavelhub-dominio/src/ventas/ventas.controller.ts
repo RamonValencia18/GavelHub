@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { VentasService } from './ventas.service';
 import { CrearVentaDto } from './dto/crear-venta.dto';
-import  { ActualizarPagoDto } from './dto/actualizar-pago.dto';
+import { ActualizarPagoDto } from './dto/actualizar-pago.dto';
 import { LoteNoEncontradoError } from '../lotes/dominio/errores';
 import { VentaExistenteError } from './dominio/errores';
 import { VentaNoEncontradaError } from './dominio/errores';
@@ -24,7 +24,6 @@ import { Rol } from 'src/auth/dominio/usuario';
 @Autenticado()
 export class VentasController {
   constructor(private readonly servicio: VentasService) {}
-
 
   @Get('lote/:loteId')
   @Autenticado(Rol.ADMIN)

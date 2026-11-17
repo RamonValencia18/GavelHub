@@ -27,7 +27,10 @@ import {
   VentaExistenteError,
   VentaNoEncontradaError,
 } from '../../ventas/dominio/errores';
-import { CorreoYaRegistradoError, CredencialesInvalidasError } from 'src/auth/dominio/errores';
+import {
+  CorreoYaRegistradoError,
+  CredencialesInvalidasError,
+} from 'src/auth/dominio/errores';
 
 // Clase base o alias tipo Unión para atrapar todos los errores de dominio
 export type ErrorDeDominio =
@@ -42,7 +45,7 @@ export type ErrorDeDominio =
   | VentaExistenteError
   | VentaNoEncontradaError
   | CorreoYaRegistradoError
-  |CredencialesInvalidasError
+  | CredencialesInvalidasError
   | MontoInsuficienteError;
 
 // Captura cualquier clase de error especificada en la lista o que herede de Error
@@ -58,7 +61,7 @@ export type ErrorDeDominio =
   VentaExistenteError,
   VentaNoEncontradaError,
   MontoInsuficienteError,
-  CredencialesInvalidasError
+  CredencialesInvalidasError,
 )
 export class DominioExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger('Dominio');

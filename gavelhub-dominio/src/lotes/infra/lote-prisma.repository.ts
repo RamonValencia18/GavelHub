@@ -26,7 +26,6 @@ export class PrismaLoteRepository implements LoteRepository {
         data: { estado },
       });
     } catch {
-      // Prisma lanza un error P2025 si el registro no existe al intentar actualizar
       return null;
     }
   }

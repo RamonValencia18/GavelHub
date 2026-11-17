@@ -22,7 +22,6 @@ import { OfertaInsuficienteError } from './dominio/errores.js';
 import { Autenticado } from 'src/auth/decoradores/autenticado.decorator';
 import { UsuarioActual } from 'src/auth/decoradores/usuario-actual.decorator';
 
-
 @Controller('lotes/:loteId/ofertas')
 @Autenticado()
 export class OfertasController {
@@ -41,7 +40,7 @@ export class OfertasController {
     }
     return oferta;
   }
-  
+
   @Post()
   @HttpCode(201)
   async crear(
@@ -50,7 +49,6 @@ export class OfertasController {
     @Body() dto: CrearOfertaDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    
     try {
       const oferta = await this.servicio.crear(loteId, usuarioId, dto);
       res.setHeader('Location', `/lotes/${loteId}/ofertas/${oferta.id}`);

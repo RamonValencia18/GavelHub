@@ -1,9 +1,4 @@
-import {
-  Controller,
-  Get,
-  Param,
-  NotFoundException,
-} from '@nestjs/common';
+import { Controller, Get, Param, NotFoundException } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
 import { Autenticado } from 'src/auth/decoradores/autenticado.decorator';
 import { Rol } from 'src/auth/dominio/usuario';
@@ -26,5 +21,4 @@ export class UsuariosController {
     }
     return usuario;
   }
-
 }

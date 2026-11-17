@@ -5,7 +5,10 @@ import { Oferta } from './dominio/entidades';
 import { LotesService } from '../lotes/lotes.service';
 import { UsuariosService } from '../usuarios/usuarios.service';
 import { CrearOfertaDto } from './dto/crear-oferta.dto.js';
-import { FueraDePeriodoError, OfertaInsuficienteError } from './dominio/errores';
+import {
+  FueraDePeriodoError,
+  OfertaInsuficienteError,
+} from './dominio/errores';
 import {
   LoteNoEncontradoError,
   LoteNoAbiertoError,
@@ -18,7 +21,7 @@ export class OfertasService {
     private readonly ofertaRepo: OfertaRepository,
     private readonly lotesService: LotesService,
     private readonly usuariosService: UsuariosService,
-  ) { }
+  ) {}
 
   listarPorLote(loteId: string): Promise<Oferta[]> {
     return this.ofertaRepo.buscarPorLote(loteId);
@@ -28,7 +31,11 @@ export class OfertasService {
     return this.ofertaRepo.obtenerOfertaMayor(loteId);
   }
 
-  async crear(loteId: string, usuarioId: string, dto: CrearOfertaDto): Promise<Oferta> {
+  async crear(
+    loteId: string,
+    usuarioId: string,
+    dto: CrearOfertaDto,
+  ): Promise<Oferta> {
     const lote = await this.lotesService.buscarPorId(loteId);
     if (!lote) {
       throw new LoteNoEncontradoError(loteId);

@@ -7,9 +7,11 @@ import { JwtPayload } from './dominio/usuario';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
     const jwtSecret = process.env.JWT_SECRET;
-    
+
     if (!jwtSecret) {
-      throw new Error('JWT_SECRET no está definido en las variables de entorno');
+      throw new Error(
+        'JWT_SECRET no está definido en las variables de entorno',
+      );
     }
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
