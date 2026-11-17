@@ -1,0 +1,43 @@
+import axios from 'axios';
+
+// La URL base es configurable mediante variables de entorno (Vite)
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+
+export const api = axios.create({
+  baseURL: API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+/**
+ * Interceptor de Peticiones:
+ * Inyecta automáticamente el token de autenticación Bearer JWT si existe en el almacenamiento local.
+ */
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('gavelhub_token');
+    if (token && config.headers) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+/**
+ * Interceptor de Respuestas:
+ * Detecta cuando el servidor central rechaza la credencial (HTTP 401)
+ * para limpiar la sesión expirada y notificar globalmente a la aplicación.
+ */
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('gavelhub_token');
+      // Emite un evento global para que la app reaccione y redirija al login
+      window.dispatchEvent(new Event('session-expired'));
+    }
+    return Promise.reject(error);
+  }
+);
