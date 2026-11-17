@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { ExplorarLotesPage } from '../lotes/pages/ExplorarLotesPage';
 import { DetalleLotePage } from '../lotes/pages/DetalleLotePage';
 import { LoginPage } from '../usuarios/pages/LoginPage';
+import { RegistroPage } from '../usuarios/pages/RegistroPage';
 
 export const AppRoutes: React.FC = () => {
   return (
@@ -18,6 +19,9 @@ export const AppRoutes: React.FC = () => {
 
       {/* Vista al formulario de inicio de sesión*/}
       <Route path="/login" element={<LoginPage />} />
+
+      {/* Vista al formulario de registro de un nuevo usuario*/}
+      <Route path="/registro" element={<RegistroPage />} />
 
       {/* Pantalla 404 para rutas inexistentes */}
       <Route
