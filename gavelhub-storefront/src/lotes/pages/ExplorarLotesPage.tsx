@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { AlertTriangle, RefreshCw, Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { api } from '../../common/api/client';
+import { listarLotes } from '../services/lotesService';
 import { LoteCard } from '../components/LoteCard';
 import { LotesFilterBar } from '../components/LotesFilterBar';
 import type { Lote } from '../types/lote';
@@ -28,9 +28,7 @@ export const ExplorarLotesPage: React.FC = () => {
       setCargando(true);
       setError(null);
 
-      const respuesta = await api.get('/lotes');
-      const datos = respuesta.data?.datos ?? respuesta.data;
-      setLotes(Array.isArray(datos) ? datos : []);
+      setLotes(await listarLotes());
     } catch {
       setError('GavelHub no pudo consultar el catálogo en este momento.');
     } finally {

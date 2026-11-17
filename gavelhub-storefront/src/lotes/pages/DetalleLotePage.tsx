@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { AlertTriangle, Search, X } from 'lucide-react';
 import { useParams, Link } from 'react-router-dom';
-import { api } from '../../common/api/client';
+import { obtenerLote } from '../services/lotesService';
+import { ofertasService } from '../../ofertas/services/ofertasService';
 import { GaleriaEspecimen } from '../components/GaleriaEspecimen';
 import { HistorialOfertas } from '../../ofertas/components/HistorialOfertas';
 import { ConsolaOferta } from '../../ofertas/components/ConsolaOferta';
@@ -31,15 +32,11 @@ export const DetalleLotePage: React.FC = () => {
       setError(null);
 
       // 1. Petición HTTP real para obtener los datos del lote
-      const resLote = await api.get(`/lotes/${id}`);
-      const datosLote = resLote.data?.datos || resLote.data;
-      setLote(datosLote);
+      setLote(await obtenerLote(id));
 
       // 2. Petición HTTP real para obtener el historial de ofertas
       try {
-        const resOfertas = await api.get(`/lotes/${id}/ofertas`);
-        const listaOfertas = resOfertas.data?.datos || resOfertas.data || [];
-        setOfertas(Array.isArray(listaOfertas) ? listaOfertas : []);
+        setOfertas(await ofertasService.obtenerHistorialPorLote(id));
       } catch (errOfertas) {
         setOfertas([]);
       }

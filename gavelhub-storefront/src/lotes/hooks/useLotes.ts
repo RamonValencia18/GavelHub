@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { listarLotes } from '../services/lotesService'
 import type { Lote } from '../types/lote'
@@ -14,13 +13,11 @@ export function useLotes() {
     listarLotes()
       .then(setLotes)
       .catch((requestError: unknown) => {
-        if (!axios.isCancel(requestError)) {
-          setError(
-            requestError instanceof Error
-              ? requestError.message
-              : 'No fue posible cargar los lotes',
-          )
-        }
+        setError(
+          requestError instanceof Error
+            ? requestError.message
+            : 'No fue posible cargar los lotes',
+        )
       })
       .finally(() => setLoading(false))
 
