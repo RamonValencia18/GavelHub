@@ -6,6 +6,7 @@ import { LoginPage } from '../usuarios/pages/LoginPage';
 import { RegistroPage } from '../usuarios/pages/RegistroPage';
 import { MisSeguidosPage } from '../lotes/pages/MisSeguidosPage';
 import { MisGanadosPage } from '../ventas/pages/MisGanadosPage';
+import { ProtectedRoute } from '../usuarios/components/ProtectedRoute';
 
 export const AppRoutes: React.FC = () => {
   return (
@@ -25,8 +26,22 @@ export const AppRoutes: React.FC = () => {
       {/* Vista al formulario de registro de un nuevo usuario*/}
       <Route path="/registro" element={<RegistroPage />} />
 
-      <Route path="/seguimiento" element={<MisSeguidosPage />} />
-      <Route path="/ganados" element={<MisGanadosPage />} />
+      <Route
+        path="/seguimiento"
+        element={
+          <ProtectedRoute>
+            <MisSeguidosPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/ganados"
+        element={
+          <ProtectedRoute>
+            <MisGanadosPage />
+          </ProtectedRoute>
+        }
+      />
 
       {/* Pantalla 404 para rutas inexistentes */}
       <Route

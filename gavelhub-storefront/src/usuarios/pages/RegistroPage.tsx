@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { AlertTriangle, BadgeCheck, Eye, EyeOff, LockKeyhole, Mail } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
-import { api } from '../../common/api/client';
+import { Link } from 'react-router-dom';
+import { useRegistro } from '../hooks/useRegistro';
 import '../css/RegistroPage.css';
 
 export const RegistroPage: React.FC = () => {
-    const navigate = useNavigate();
+    const { cargando, errorServidor, rutaDestino, ejecutarRegistro, limpiarError } = useRegistro();
 
     const [nombre, setNombre] = useState('');
     const [correo, setCorreo] = useState('');
@@ -62,29 +62,15 @@ export const RegistroPage: React.FC = () => {
         return Object.keys(nuevosErrores).length === 0;
     };
 
-    const [errorServidor, setErrorServidor] = useState<string | null>(null);
-    const [registrando, setRegistrando] = useState(false);
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        limpiarError();
+
         if (!validarFormulario()) return;
-        try {
-            setRegistrando(true);
-            setErrorServidor(null);
-            await api.post('/auth/registrar', {
-                correo: correo.trim(),
-                password: contrasena,
-            });
-            navigate('/login');
-        } catch (error: any) {
-            setErrorServidor(
-                error.response?.status === 409
-                    ? 'Este correo ya tiene una cuenta registrada.'
-                    : 'No pudimos crear tu cuenta. Revisa los datos e inténtalo nuevamente.'
-            );
-        } finally {
-            setRegistrando(false);
-        }
+        await ejecutarRegistro({
+            correo: correo.trim(),
+            password: contrasena,
+        });
     };
 
     return (
@@ -207,6 +193,7 @@ export const RegistroPage: React.FC = () => {
                                         className="auth-input-box__input"
                                         placeholder="Nombre y apellidos como en tu identificación oficial"
                                         value={nombre}
+                                        disabled={cargando}
                                         onChange={(e) => {
                                             setNombre(e.target.value);
                                             if (errores.nombre) setErrores({ ...errores, nombre: undefined });
@@ -243,6 +230,7 @@ export const RegistroPage: React.FC = () => {
                                         className="auth-input-box__input"
                                         placeholder="carlos.mendoza@arte.mx"
                                         value={correo}
+                                        disabled={cargando}
                                         onChange={(e) => {
                                             setCorreo(e.target.value);
                                             if (errores.correo) setErrores({ ...errores, correo: undefined });
@@ -282,6 +270,7 @@ export const RegistroPage: React.FC = () => {
                                         className="auth-input-box__input"
                                         placeholder="••••••••••••••"
                                         value={contrasena}
+                                        disabled={cargando}
                                         onChange={(e) => {
                                             setContrasena(e.target.value);
                                             if (errores.contrasena)
@@ -358,6 +347,7 @@ export const RegistroPage: React.FC = () => {
                                         className="auth-input-box__input"
                                         placeholder="••••••••••••••"
                                         value={confirmarContrasena}
+                                        disabled={cargando}
                                         onChange={(e) => {
                                             setConfirmarContrasena(e.target.value);
                                             if (errores.confirmarContrasena)
@@ -383,6 +373,7 @@ export const RegistroPage: React.FC = () => {
                                     <input
                                         type="checkbox"
                                         checked={aceptaTerminos}
+                                        disabled={cargando}
                                         onChange={(e) => {
                                             setAceptaTerminos(e.target.checked);
                                             if (errores.terminos)
@@ -403,13 +394,21 @@ export const RegistroPage: React.FC = () => {
                             </div>
 
                             {/* Botón de envío */}
-                            <button type="submit" className="auth-btn-gold" disabled={registrando}>
-                                <span>{registrando ? 'Creando cuenta...' : 'Crear cuenta y habilitar paleta'}</span>
+                            <button type="submit" className="auth-btn-gold" disabled={cargando}>
+                                <span>
+                                    {cargando
+                                        ? 'Habilitando paleta digital...'
+                                        : 'Crear cuenta y habilitar paleta'}
+                                </span>
                             </button>
 
                             <div className="auth-switch-text">
                                 ¿Ya tienes cuenta?
-                                <Link to="/login" className="auth-switch-link">
+                                <Link
+                                    to="/login"
+                                    state={{ from: rutaDestino }}
+                                    className="auth-switch-link"
+                                >
                                     Inicia sesión aquí
                                 </Link>
                             </div>
