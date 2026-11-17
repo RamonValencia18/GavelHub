@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AlertTriangle, ArrowRight, Eye, EyeOff, LockKeyhole, Mail } from 'lucide-react';
+import { AlertTriangle, Eye, EyeOff, LockKeyhole, Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../features/auth/context/AuthContext';
 import { useLogin } from '../hooks/useLogin';
@@ -134,7 +134,7 @@ export const LoginPage: React.FC = () => {
 
                         {avisoSesion && (
                             <div className="auth-field-error-box" style={{ marginBottom: '16px', padding: '12px' }}>
-                                <AlertTriangle size={14} />
+                                <span>[!]</span>
                                 <span>{avisoSesion}</span>
                             </div>
                         )}
@@ -250,7 +250,7 @@ export const LoginPage: React.FC = () => {
                             {/* Botón Entrar */}
                             <button type="submit" className="auth-btn-gold" disabled={cargando}>
                                 <span>{cargando ? 'Verificando credenciales...' : 'Entrar a mi cuenta'}</span>
-                                <ArrowRight size={18} />
+                                <span>→</span>
                             </button>
 
                             <div className="auth-divider">
