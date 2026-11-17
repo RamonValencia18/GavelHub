@@ -1,0 +1,237 @@
+.bidding-console {
+  background: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border, #e5e2da);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-md, 0 4px 16px rgba(0, 9, 34, 0.08));
+  position: sticky;
+  top: 90px;
+}
+
+.bidding-console__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.bidding-console__status-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #feca5a20;
+  color: #7a5900;
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  background-color: var(--color-secondary, #c99a2e);
+  border-radius: 50%;
+}
+
+.bidding-console__label {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--color-text-muted, #65676e);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.bidding-console__timer-grid {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--color-surface-subtle, #f6f3eb);
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin-bottom: 1.25rem;
+}
+
+.timer-unit {
+  text-align: center;
+  flex: 1;
+}
+
+.timer-unit__value {
+  display: block;
+  font-family: var(--font-mono, monospace);
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--color-primary, #000922);
+}
+
+.timer-unit__value--active {
+  color: var(--color-secondary, #c99a2e);
+}
+
+.timer-unit__label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  color: var(--color-text-muted, #65676e);
+}
+
+.bidding-console__current-price {
+  background: var(--color-surface-subtle, #f6f3eb);
+  padding: 1rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+.bidding-console__amount {
+  font-family: var(--font-serif, serif);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-primary, #000922);
+}
+
+.bidding-console__leader-badge {
+  color: #1e5c38;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-top: 0.4rem;
+}
+
+.bidding-console__min-required {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  margin-bottom: 1.25rem;
+  color: var(--color-text-muted, #65676e);
+}
+
+.quick-bids-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.quick-bid-btn {
+  padding: 0.5rem;
+  background: var(--color-surface-subtle, #f6f3eb);
+  border: 1px solid var(--color-border, #e5e2da);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-primary, #000922);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.quick-bid-btn:hover {
+  background: var(--color-secondary-light, #feca5a);
+}
+
+/* Contenedor del Stepper */
+.bid-stepper {
+  display: flex;
+  align-items: center;
+  background-color: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border, #e5e2da);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+/* Botones de incremento (+) y decremento (-) */
+.bid-stepper__btn {
+  width: 44px;
+  height: 44px;
+  background-color: var(--color-surface-subtle, #f6f3eb);
+  border: none;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-primary, #000922);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.bid-stepper__btn:hover:not(:disabled) {
+  background-color: var(--color-surface-high, #ebe8e0);
+}
+
+.bid-stepper__btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* El Input que causaba la barra negra */
+.bid-stepper__input {
+  flex: 1;
+  text-align: center;
+  border: none;
+  background: transparent !important; /* <--- Fuerza el fondo transparente */
+  color: var(--color-primary, #000922) !important; /* <--- Texto en azul marino */
+  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-weight: 700;
+  font-size: 1.15rem;
+  outline: none;
+  padding: 0.5rem;
+}
+.bidding-console__alert-error {
+  background: #ffdad6;
+  border: 1px solid #ba1a1a;
+  color: #93000a;
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  margin-bottom: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-submit-bid {
+  width: 100%;
+  padding: 0.85rem;
+  background: var(--color-primary, #000922);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  margin-bottom: 0.5rem;
+  transition: background 0.2s;
+}
+
+.btn-submit-bid:hover:not(:disabled) {
+  background: var(--color-primary-hover, #12203f);
+}
+
+.btn-submit-bid:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-follow {
+  width: 100%;
+  padding: 0.65rem;
+  background: var(--color-surface-subtle, #f6f3eb);
+  border: 1px solid var(--color-border, #e5e2da);
+  border-radius: 8px;
+  font-weight: 600;
+  color: var(--color-primary, #000922);
+  cursor: pointer;
+}
+
+.bidding-console__footer-note {
+  margin-top: 1.25rem;
+  background: var(--color-surface-subtle, #f6f3eb);
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  color: var(--color-text-muted, #65676e);
+}
+
+.note-title {
+  display: block;
+  font-weight: 600;
+  color: var(--color-primary, #000922);
+  margin-bottom: 0.2rem;
+}

@@ -1,0 +1,155 @@
+@import './AuthLayout.css';
+
+.auth-brand__logo-box--dark {
+    background: rgba(255, 255, 255, 0.1);
+    color: #feca5a;
+    border: 1px solid rgba(254, 202, 90, 0.25);
+}
+
+.auth-brand__pill-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    padding: 0.35rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    color: #e2e8f0;
+    margin-bottom: 1.25rem;
+}
+
+.auth-brand__pill-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #feca5a;
+}
+
+.auth-check-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.35rem;
+}
+
+.auth-check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.9rem;
+}
+
+.auth-check-item__icon {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: rgba(254, 202, 90, 0.14);
+    color: #feca5a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.auth-feature-card__title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #f8fafc;
+    margin: 0 0 0.25rem 0;
+}
+
+.auth-feature-card__text {
+    font-size: 0.78rem;
+    line-height: 1.45;
+    color: #94a3b8;
+    margin: 0;
+}
+
+.auth-form__step-label {
+    font-family: var(--font-mono, "JetBrains Mono", monospace);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #65676e;
+}
+
+.auth-input-box--white {
+    background: #ffffff;
+}
+
+.auth-field__hint-right--error {
+    color: #b91c1c;
+    font-weight: 600;
+}
+
+.password-rules-row {
+    display: flex;
+    gap: 1.15rem;
+    margin-top: 0.45rem;
+    flex-wrap: wrap;
+}
+
+.password-rule {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.75rem;
+    color: #65676e;
+}
+
+.password-rule__dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #e5e2da;
+    color: #65676e;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6rem;
+    font-weight: 700;
+}
+
+.password-rule--met .password-rule__dot {
+    background: #feca5a;
+    color: #7a5900;
+}
+
+.auth-terms-box {
+    background: #f6f3eb;
+    border: 1px solid #e5e2da;
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+    font-size: 0.78rem;
+    line-height: 1.45;
+    color: #4b5563;
+    cursor: pointer;
+}
+
+.auth-terms-box input[type="checkbox"] {
+    accent-color: #0b192c;
+    width: 16px;
+    height: 16px;
+    margin-top: 2px;
+}
+
+.auth-switch-text {
+    text-align: center;
+    font-size: 0.85rem;
+    color: #65676e;
+    margin-top: 0.25rem;
+}
+
+.auth-switch-link {
+    color: #000922;
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-color: #c99a2e;
+    text-underline-offset: 3px;
+    margin-left: 0.35rem;
+}

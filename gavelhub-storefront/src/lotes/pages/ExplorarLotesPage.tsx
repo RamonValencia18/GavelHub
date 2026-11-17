@@ -1,46 +1,59 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { LoteCard } from '../components/LoteCard';
 import { LotesFilterBar } from '../components/LotesFilterBar';
 import type { Lote } from '../types/lote';
 import '../css/ExplorarLotesPage.css';
 
 export const ExplorarLotesPage: React.FC = () => {
-  const [busqueda, setBusqueda] = useState('');
-  const [filtroEstado, setFiltroEstado] = useState('TODOS');
-  const [orden, setOrden] = useState('proximo');
+  const navigate = useNavigate();
+
+  const [busqueda, setBusqueda] = useState<string>('');
+  const [filtroEstado, setFiltroEstado] = useState<string>('TODOS');
+  const [orden, setOrden] = useState<string>('proximo');
   const [favoritos, setFavoritos] = useState<Record<string, boolean>>({});
 
-  // Estados de carga y consulta (los 4 casos de UI)
+  // Los 4 estados de UI exigidos
   const [lotes, setLotes] = useState<Lote[]>([]);
   const [cargando, setCargando] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Simulamos la llamada a la API (en producción se usa lotes/services)
     const cargarLotes = async () => {
       try {
         setCargando(true);
         setError(null);
 
-        // Simulamos retardo de red
-        await new Promise((res) => setTimeout(res, 800));
+        // Simulación de respuesta de API alineada con Prisma
+        await new Promise((res) => setTimeout(res, 600));
 
-        // Datos mapeados bajo el schema Prisma
         const datosPrisma: Lote[] = [
           {
-            id: '550e8400-e29b-41d4-a716-446655440001',
+            id: '109e8400-e29b-41d4-a716-446655440109',
+            descripcion: 'Centenario 50 Pesos Oro Ley .900 (1943) NGC MS64',
+            estado: 'ABIERTO',
+            precioSalida: 50000,
+            incrementoMinimo: 1500,
+            precioReserva: 65000,
+            fechaHoraApertura: new Date().toISOString(),
+            fechaHoraCierre: new Date(Date.now() + 1000 * 60 * 60 * 48).toISOString(),
+            mediaList: [],
+            ofertas: [],
+          },
+          {
+            id: '109e8400-e29b-41d4-a716-446655440109',
             descripcion: 'Pluma Fuente Antigua de Colección Celuloide',
             estado: 'ABIERTO',
             precioSalida: 15000,
             incrementoMinimo: 500,
             precioReserva: 20000,
             fechaHoraApertura: new Date().toISOString(),
-            fechaHoraCierre: new Date(Date.now() + 1000 * 60 * 45).toISOString(),
+            fechaHoraCierre: new Date(Date.now() + 1000 * 60 * 20).toISOString(),
             mediaList: [],
             ofertas: [],
           },
           {
-            id: '550e8400-e29b-41d4-a716-446655440002',
+            id: '109e8400-e29b-41d4-a716-446655440109',
             descripcion: 'Omega Speedmaster Professional Pre-Moon Calibre 321',
             estado: 'ABIERTO',
             precioSalida: 90000,
@@ -52,7 +65,7 @@ export const ExplorarLotesPage: React.FC = () => {
             ofertas: [],
           },
           {
-            id: '550e8400-e29b-41d4-a716-446655440003',
+            id: '109e8400-e29b-41d4-a716-446655440109',
             descripcion: 'Montblanc Meisterstück 149 Plumín Bicolor',
             estado: 'CERRADO',
             precioSalida: 30000,
@@ -67,7 +80,7 @@ export const ExplorarLotesPage: React.FC = () => {
 
         setLotes(datosPrisma);
       } catch (err) {
-        setError('No fue posible conectar con el servidor de subastas. Verifique su conexión.');
+        setError('No fue posible conectar con el servicio de subastas.');
       } finally {
         setCargando(false);
       }
@@ -81,10 +94,9 @@ export const ExplorarLotesPage: React.FC = () => {
   };
 
   const handleVerDetalle = (id: string) => {
-    console.log(`Navegando a /auctions/${id}`);
+    navigate(`/lotes/${id}`); // Redirección nativa de React Router
   };
 
-  // Filtrado de lotes en el frontend
   const lotesFiltrados = lotes.filter((lote) => {
     const coincideBusqueda = lote.descripcion
       .toLowerCase()
