@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { api } from '../../common/api/client';
 import { GaleriaEspecimen } from '../components/GaleriaEspecimen';
 import { HistorialOfertas } from '../../ofertas/components/HistorialOfertas';
-import { ConsolaOferta } from '../../ofertas/components/ConsolaOferta'; 
+import { ConsolaOferta } from '../../ofertas/components/ConsolaOferta';
 import type { Lote } from '../types/lote';
 import type { Oferta } from '../../ofertas/types/oferta';
 import '../css/DetalleLotePage.css';
@@ -16,83 +17,63 @@ export const DetalleLotePage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [esFavorito, setEsFavorito] = useState<boolean>(false);
 
-  useEffect(() => {
-    const cargarDetalleLote = async () => {
+  // Estado para la confirmación explícita en la pantalla del detalle
+  const [mensajeConfirmacion, setMensajeConfirmacion] = useState<string | null>(null);
+
+  // Función para obtener el lote y sus ofertas desde el backend NestJS (Observer)
+  const cargarDetalleYOfertas = useCallback(async () => {
+    if (!id) return;
+
+    try {
+      setCargando(true);
+      setError(null);
+
+      // 1. Petición HTTP real para obtener los datos del lote
+      const resLote = await api.get(`/lotes/${id}`);
+      const datosLote = resLote.data?.datos || resLote.data;
+      setLote(datosLote);
+
+      // 2. Petición HTTP real para obtener el historial de ofertas
       try {
-        setCargando(true);
-        setError(null);
-
-        await new Promise((res) => setTimeout(res, 500));
-
-        // En producción se realiza la petición GET /api/lotes/:id usando el id de useParams
-        const loteMock: Lote = {
-          id: id || '109',
-          descripcion: 'Centenario 50 Pesos Oro Ley .900 (1943) NGC MS64',
-          estado: 'ABIERTO',
-          precioSalida: 50000,
-          incrementoMinimo: 1500,
-          precioReserva: 65000,
-          fechaHoraApertura: '2026-11-16T09:00:00Z',
-          fechaHoraCierre: '2026-11-18T22:32:00Z',
-          mediaList: [
-            { id: 'm1', url: '', descripcion: 'Anverso', loteId: id || '109' },
-            { id: 'm2', url: '', descripcion: 'Reverso', loteId: id || '109' },
-            { id: 'm3', url: '', descripcion: 'Canto', loteId: id || '109' },
-            { id: 'm4', url: '', descripcion: 'Cápsula NGC', loteId: id || '109' },
-          ],
-        };
-
-        const ofertasMock: Oferta[] = [
-          {
-            id: 'o1',
-            cantidad: 68000,
-            estado: 'ACEPTADA',
-            fechaHora: '2026-11-16T14:28:43Z',
-            usuarioId: '4082',
-            loteId: id || '109',
-          },
-          {
-            id: 'o2',
-            cantidad: 66500,
-            estado: 'SUPERADA',
-            fechaHora: '2026-11-16T14:21:10Z',
-            usuarioId: '2904',
-            loteId: id || '109',
-          },
-        ];
-
-        setLote(loteMock);
-        setOfertas(ofertasMock);
-      } catch (err) {
-        setError('No fue posible obtener la información del lote solicitado.');
-      } finally {
-        setCargando(false);
+        const resOfertas = await api.get(`/lotes/${id}/ofertas`);
+        const listaOfertas = resOfertas.data?.datos || resOfertas.data || [];
+        setOfertas(Array.isArray(listaOfertas) ? listaOfertas : []);
+      } catch (errOfertas) {
+        setOfertas([]);
       }
-    };
-
-    if (id) {
-      cargarDetalleLote();
+    } catch (err: any) {
+      console.error('Error al consultar el lote:', err);
+      const msg = err.response?.data?.message || 'No fue posible obtener la información del lote solicitado.';
+      setError(Array.isArray(msg) ? msg.join(' • ') : msg);
+    } finally {
+      setCargando(false);
     }
   }, [id]);
 
-  const handleEnviarOferta = async (monto: number) => {
-    // Registro de la oferta enviada por el usuario
-    const nuevaOferta: Oferta = {
-      id: `o-${Date.now()}`,
-      cantidad: monto,
-      estado: 'ACEPTADA',
-      fechaHora: new Date().toISOString(),
-      usuarioId: '4082',
-      loteId: lote?.id || '',
-    };
+  useEffect(() => {
+    if (id) {
+      cargarDetalleYOfertas();
+    }
+  }, [id, cargarDetalleYOfertas]);
 
-    setOfertas((prev) => [
-      nuevaOferta,
-      ...prev.map((o) => ({ ...o, estado: 'SUPERADA' as const })),
-    ]);
+  // Manejador del evento de oferta exitosa
+  const handleOfertaExitosa = () => {
+    // 1. Re-consultar los datos del backend para actualizar el historial en vivo
+    cargarDetalleYOfertas();
+
+    // 2. Desplegar el mensaje de confirmación explícito en el encabezado del detalle
+    setMensajeConfirmacion('¡Su postura ha sido registrada y validada oficialmente por el servidor central!');
+
+    // Ocultar la confirmación automáticamente después de 6 segundos
+    setTimeout(() => {
+      setMensajeConfirmacion(null);
+    }, 6000);
   };
 
-  const ofertaMasAlta = ofertas.length > 0 ? ofertas[0].cantidad : undefined;
+  // Extraer el monto de la oferta más alta
+  const ofertaMasAlta = ofertas.length > 0
+    ? Math.max(...ofertas.map((o) => o.cantidad || 0))
+    : undefined;
 
   return (
     <div className="lote-detalle-page">
@@ -104,6 +85,44 @@ export const DetalleLotePage: React.FC = () => {
         <span className="breadcrumbs__separator">›</span>
         <span className="breadcrumbs__current">Lote {id}</span>
       </nav>
+
+      {/* BANNER DE CONFIRMACIÓN DE PUJA EXITOSA */}
+      {mensajeConfirmacion && (
+        <div
+          className="lote-confirmacion-banner"
+          style={{
+            marginBottom: '20px',
+            padding: '14px 18px',
+            backgroundColor: '#e6f7ff',
+            border: '1px solid #91d5ff',
+            borderRadius: '6px',
+            color: '#0050b3',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div>
+              <strong style={{ display: 'block', fontSize: '0.95rem' }}>Postura Confirmada</strong>
+              <span style={{ fontSize: '0.85rem' }}>{mensajeConfirmacion}</span>
+            </div>
+          </div>
+          <button
+            onClick={() => setMensajeConfirmacion(null)}
+            style={{
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              fontSize: '1rem',
+              color: '#0050b3'
+            }}
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       {/* CASO 1: CARGANDO */}
       {cargando && (
@@ -139,7 +158,7 @@ export const DetalleLotePage: React.FC = () => {
             <GaleriaEspecimen
               numeroLote={lote.id}
               descripcion={lote.descripcion}
-              mediaList={lote.mediaList}
+              mediaList={lote.mediaList || []}
             />
 
             <section className="lote-info-panel">
@@ -166,6 +185,7 @@ export const DetalleLotePage: React.FC = () => {
               ofertas={ofertas}
               precioSalida={lote.precioSalida}
               usuarioActualId="4082"
+              onRecargar={cargarDetalleYOfertas}
             />
           </div>
 
@@ -175,10 +195,7 @@ export const DetalleLotePage: React.FC = () => {
               lote={lote}
               ofertaActual={ofertaMasAlta}
               totalOfertas={ofertas.length}
-              usuarioActualId="4082"
-              onEnviarOferta={handleEnviarOferta}
-              onToggleFavorito={() => setEsFavorito(!esFavorito)}
-              esFavorito={esFavorito}
+              onOfertaRegistradaExitosamente={handleOfertaExitosa}
             />
           </div>
         </div>
