@@ -1,0 +1,173 @@
+/* Panel de Historial Público de Ofertas */
+.bid-history {
+  background: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border, #e5e2da);
+  border-radius: 14px;
+  padding: 1.75rem;
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 9, 34, 0.05));
+}
+
+.bid-history__header {
+  margin-bottom: 1.5rem;
+}
+
+.bid-history__title-block {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.bid-history__gavel-icon {
+  color: var(--color-secondary, #c99a2e);
+  font-size: 1.25rem;
+}
+
+.bid-history__title {
+  font-family: var(--font-serif, "Playfair Display", Georgia, serif);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--color-primary, #000922);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.bid-history__subtitle {
+  font-size: 0.85rem;
+  color: var(--color-text-muted, #65676e);
+  margin: 0.35rem 0 0 0;
+}
+
+/* Tabla Auditable */
+.bid-history__table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--color-border-subtle, #f1eee6);
+  border-radius: 8px;
+}
+
+.bid-history__table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.bid-history__table th {
+  background: var(--color-surface-subtle, #f6f3eb);
+  color: var(--color-text-muted, #65676e);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.85rem 1rem;
+  font-weight: 600;
+  border-bottom: 1px solid var(--color-border, #e5e2da);
+}
+
+.bid-history__row {
+  border-bottom: 1px solid var(--color-border-subtle, #f1eee6);
+  transition: background-color 0.2s ease;
+}
+
+.bid-history__row:last-child {
+  border-bottom: none;
+}
+
+.bid-history__row:hover:not(.bid-history__row--winning) {
+  background-color: var(--color-surface-subtle, #f6f3eb);
+}
+
+/* Estado Ganador / Liderando */
+.bid-history__row--winning {
+  background-color: #ebf5ef;
+}
+
+.bid-history__user-cell {
+  padding: 0.9rem 1rem;
+  font-weight: 600;
+  color: var(--color-primary, #000922);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+}
+
+.bid-history__row--winning .bid-history__user-cell {
+  color: #1e5c38;
+}
+
+.bid-history__indicator {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: #2a7a4c;
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
+}
+
+.bid-history__amount-cell {
+  padding: 0.9rem 1rem;
+  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-weight: 700;
+  color: var(--color-primary, #000922);
+}
+
+.bid-history__row--winning .bid-history__amount-cell {
+  color: #1e5c38;
+  font-size: 1rem;
+}
+
+.bid-history__time-cell {
+  padding: 0.9rem 1rem;
+  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-size: 0.8rem;
+  color: var(--color-text-muted, #65676e);
+}
+
+.bid-history__status-cell {
+  padding: 0.9rem 1rem;
+}
+
+/* Badges de Estado de Oferta */
+.badge-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge-status--winning {
+  background: #dcf0e2;
+  color: #1e5c38;
+}
+
+.badge-status--outbid {
+  background: var(--color-surface-subtle, #f6f3eb);
+  color: var(--color-text-muted, #65676e);
+}
+
+.badge-status--base {
+  background: var(--color-surface-subtle, #f6f3eb);
+  color: var(--color-primary, #000922);
+  border: 1px solid var(--color-border, #e5e2da);
+}
+
+.bid-history__row--base {
+  background-color: var(--color-surface-subtle, #f6f3eb);
+  font-style: italic;
+}
+
+/* Auxiliares de Alineación y Visibilidad */
+.text-right {
+  text-align: right;
+}
+
+@media (max-width: 640px) {
+  .hidden-mobile {
+    display: none;
+  }
+}
