@@ -1,15 +1,20 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { api } from '../../common/api/client';
+import { useAuth } from '../../features/auth/context/AuthContext';
 import '../css/LoginPage.css';
 
 export const LoginPage: React.FC = () => {
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const [correo, setCorreo] = useState('');
     const [contrasena, setContrasena] = useState('');
     const [mostrarContrasena, setMostrarContrasena] = useState(false);
     const [mantenerActiva, setMantenerActiva] = useState(false);
 
+    const [cargando, setCargando] = useState(false);
+    const [errorServidor, setErrorServidor] = useState<string | null>(null);
     const [errores, setErrores] = useState<{ correo?: string; contrasena?: string }>({});
 
     const validar = (): boolean => {
@@ -30,10 +35,59 @@ export const LoginPage: React.FC = () => {
         return Object.keys(nuevosErrores).length === 0;
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setErrorServidor(null);
+
         if (!validar()) return;
-        navigate('/lotes');
+
+        setCargando(true);
+
+        try {
+            // Petición real al backend de NestJS
+            const response = await api.post('/auth/login', {
+                correo: correo.trim(),
+                password: contrasena
+            });
+
+            // Extraer el token de response.data.datos.accessToken
+            const resBody = response.data;
+            const token = resBody?.datos?.accessToken || resBody?.accessToken || resBody?.access_token || resBody?.token;
+
+            if (token && typeof token === 'string') {
+                // Invocamos la función del AuthContext para actualizar el estado global de React
+                login(token);
+
+                // Configurar la cabecera por defecto en Axios
+                api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+                // Navegar a la sala de lotes
+                navigate('/lotes');
+            } else {
+                setErrorServidor('El servidor devolvió respuesta 200 pero no se encontró la credencial JWT en datos.accessToken.');
+            }
+        } catch (err: any) {
+            // Extraer el mensaje devuelto por NestJS (puede ser string o Array de strings)
+            const respuestaBackend = err.response?.data?.message;
+
+            if (respuestaBackend) {
+                if (Array.isArray(respuestaBackend)) {
+                    // Si NestJS devuelve un arreglo de errores de validación DTO
+                    setErrorServidor(respuestaBackend.join(' • '));
+                } else {
+                    // Si NestJS devuelve un mensaje directo en texto
+                    setErrorServidor(respuestaBackend);
+                }
+            } else if (err.response?.status === 401) {
+                setErrorServidor('Correo o contraseña incorrectos. Verifique sus credenciales.');
+            } else if (!err.response) {
+                setErrorServidor('No se pudo establecer conexión con el servidor central de GavelHub.');
+            } else {
+                setErrorServidor('Ocurrió un error inesperado al procesar la solicitud.');
+            }
+        } finally {
+            setCargando(false);
+        }
     };
 
     return (
@@ -122,6 +176,14 @@ export const LoginPage: React.FC = () => {
                             tiempo real.
                         </p>
 
+                        {/* Banner de error proveniente del servidor o de red */}
+                        {errorServidor && (
+                            <div className="auth-field-error-box" style={{ marginBottom: '16px', padding: '12px' }}>
+                                <span>[!]</span>
+                                <span>{errorServidor}</span>
+                            </div>
+                        )}
+
                         <form className="auth-form-body" onSubmit={handleSubmit} noValidate>
                             {/* Campo: Correo Electrónico */}
                             <div>
@@ -145,6 +207,7 @@ export const LoginPage: React.FC = () => {
                                         className="auth-input-box__input"
                                         placeholder="ejemplo@coleccionista.mx"
                                         value={correo}
+                                        disabled={cargando}
                                         onChange={(e) => {
                                             setCorreo(e.target.value);
                                             if (errores.correo) setErrores({ ...errores, correo: undefined });
@@ -188,6 +251,7 @@ export const LoginPage: React.FC = () => {
                                         className="auth-input-box__input"
                                         placeholder="••••••••••••"
                                         value={contrasena}
+                                        disabled={cargando}
                                         onChange={(e) => {
                                             setContrasena(e.target.value);
                                             if (errores.contrasena)
@@ -215,14 +279,15 @@ export const LoginPage: React.FC = () => {
                                 <input
                                     type="checkbox"
                                     checked={mantenerActiva}
+                                    disabled={cargando}
                                     onChange={(e) => setMantenerActiva(e.target.checked)}
                                 />
                                 <span>Mantener activa la consola de postor en este dispositivo</span>
                             </label>
 
                             {/* Botón Entrar */}
-                            <button type="submit" className="auth-btn-gold">
-                                <span>Entrar a mi cuenta</span>
+                            <button type="submit" className="auth-btn-gold" disabled={cargando}>
+                                <span>{cargando ? 'Verificando credenciales...' : 'Entrar a mi cuenta'}</span>
                                 <span>→</span>
                             </button>
 

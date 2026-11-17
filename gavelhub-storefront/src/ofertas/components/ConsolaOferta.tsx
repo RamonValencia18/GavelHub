@@ -13,7 +13,6 @@ interface ConsolaOfertaProps {
 export const ConsolaOferta: React.FC<ConsolaOfertaProps> = ({
   lote,
   ofertaActual,
-  totalOfertas = 0,
   onOfertaRegistradaExitosamente,
 }) => {
   const { id, estado, precioSalida, incrementoMinimo } = lote;

@@ -11,7 +11,7 @@ export const ofertasService = {
    * GET /api/lotes/:loteId/ofertas
    */
   async obtenerHistorialPorLote(loteId: string): Promise<Oferta[]> {
-    const response = await api.get<Oferta[]>(`/lotes/${loteId}/ofertas`);
+    const response = await api.get<Oferta[]>(`/api/lotes/${loteId}/ofertas`);
     // Si el RespuestaUniformeInterceptor envuelve la data, Axios o el interceptor la entregan
     return response.data;
   },

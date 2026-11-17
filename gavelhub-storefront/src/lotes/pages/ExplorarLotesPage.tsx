@@ -29,7 +29,7 @@ export const ExplorarLotesPage: React.FC = () => {
 
         const datosPrisma: Lote[] = [
           {
-            id: '109',
+            id: '109e8400-e29b-41d4-a716-446655440109',
             descripcion: 'Centenario 50 Pesos Oro Ley .900 (1943) NGC MS64',
             estado: 'ABIERTO',
             precioSalida: 50000,
@@ -41,7 +41,7 @@ export const ExplorarLotesPage: React.FC = () => {
             ofertas: [],
           },
           {
-            id: '112',
+            id: '109e8400-e29b-41d4-a716-446655440109',
             descripcion: 'Pluma Fuente Antigua de Colección Celuloide',
             estado: 'ABIERTO',
             precioSalida: 15000,
@@ -53,7 +53,7 @@ export const ExplorarLotesPage: React.FC = () => {
             ofertas: [],
           },
           {
-            id: '108',
+            id: '109e8400-e29b-41d4-a716-446655440109',
             descripcion: 'Omega Speedmaster Professional Pre-Moon Calibre 321',
             estado: 'ABIERTO',
             precioSalida: 90000,
@@ -65,7 +65,7 @@ export const ExplorarLotesPage: React.FC = () => {
             ofertas: [],
           },
           {
-            id: '107',
+            id: '109e8400-e29b-41d4-a716-446655440109',
             descripcion: 'Montblanc Meisterstück 149 Plumín Bicolor',
             estado: 'CERRADO',
             precioSalida: 30000,

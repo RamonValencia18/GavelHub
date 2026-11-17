@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { ofertasService } from '../services/ofertasService';
-import type { Oferta } from '../types/oferta';
 
 export const useRealizarOferta = () => {
   const [enviando, setEnviando] = useState<boolean>(false);
