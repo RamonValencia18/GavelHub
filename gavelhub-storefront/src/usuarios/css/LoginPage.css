@@ -1,0 +1,132 @@
+@import './AuthLayout.css';
+
+.auth-brand__kicker {
+    display: inline-block;
+    font-family: var(--font-mono, "JetBrains Mono", monospace);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #feca5a;
+    margin-bottom: 0.85rem;
+}
+
+.auth-feature-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+}
+
+.auth-feature-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 1rem 1.15rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.9rem;
+}
+
+.auth-feature-card__icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(254, 202, 90, 0.12);
+    color: #feca5a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.auth-feature-card__title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #f8fafc;
+    margin: 0 0 0.25rem 0;
+}
+
+.auth-feature-card__text {
+    font-size: 0.78rem;
+    line-height: 1.45;
+    color: #94a3b8;
+    margin: 0;
+}
+
+.auth-field__helper-mono {
+    font-family: var(--font-mono, "JetBrains Mono", monospace);
+    font-size: 0.72rem;
+    color: #65676e;
+    margin-top: 0.35rem;
+}
+
+.auth-field__hint-right--link {
+    color: #000922;
+    font-weight: 600;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.auth-checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.84rem;
+    color: #4b5563;
+    cursor: pointer;
+}
+
+.auth-checkbox-row input[type="checkbox"] {
+    accent-color: #0b192c;
+    width: 16px;
+    height: 16px;
+}
+
+.auth-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #65676e;
+    font-size: 0.78rem;
+    margin: 0.25rem 0;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #e5e2da;
+}
+
+.auth-divider span {
+    padding: 0 0.75rem;
+}
+
+.auth-btn-secondary {
+    width: 100%;
+    padding: 0.8rem 1.25rem;
+    background: #f4f1ea;
+    color: #000922;
+    border: 1px solid #e5e2da;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.88rem;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    box-sizing: border-box;
+    transition: background 0.2s;
+}
+
+.auth-btn-secondary:hover {
+    background: #ebe8e0;
+}
+
+.auth-legal-note {
+    font-size: 0.74rem;
+    color: #65676e;
+    line-height: 1.45;
+    margin: 0;
+}
