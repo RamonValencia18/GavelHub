@@ -31,9 +31,21 @@ api.interceptors.request.use(
  * para limpiar la sesión expirada y notificar globalmente a la aplicación.
  */
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    if (
+      response.data &&
+      typeof response.data === 'object' &&
+      'exito' in response.data &&
+      'datos' in response.data
+    ) {
+      response.data = response.data.datos;
+    }
+    return response;
+  },
   (error) => {
-    if (error.response?.status === 401) {
+    const requestUrl: string = error.config?.url || '';
+    // Si responde 401 y no es el intento de login, la credencial expiró
+    if (error.response?.status === 401 && !requestUrl.includes('/auth/login')) {
       localStorage.removeItem('gavelhub_token');
       // Emite un evento global para que la app reaccione y redirija al login
       window.dispatchEvent(new Event('session-expired'));

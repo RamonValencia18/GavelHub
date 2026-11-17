@@ -1,20 +1,18 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { api } from '../../common/api/client';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../features/auth/context/AuthContext';
+import { useLogin } from '../hooks/useLogin';
 import '../css/LoginPage.css';
 
 export const LoginPage: React.FC = () => {
-    const navigate = useNavigate();
-    const { login } = useAuth();
+    const { avisoSesion } = useAuth();
+    const { cargando, errorServidor, rutaDestino, ejecutarLogin, limpiarError } = useLogin();
 
     const [correo, setCorreo] = useState('');
     const [contrasena, setContrasena] = useState('');
     const [mostrarContrasena, setMostrarContrasena] = useState(false);
     const [mantenerActiva, setMantenerActiva] = useState(false);
 
-    const [cargando, setCargando] = useState(false);
-    const [errorServidor, setErrorServidor] = useState<string | null>(null);
     const [errores, setErrores] = useState<{ correo?: string; contrasena?: string }>({});
 
     const validar = (): boolean => {
@@ -37,57 +35,14 @@ export const LoginPage: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setErrorServidor(null);
+        limpiarError();
 
         if (!validar()) return;
 
-        setCargando(true);
-
-        try {
-            // Petición real al backend de NestJS
-            const response = await api.post('/auth/login', {
-                correo: correo.trim(),
-                password: contrasena
-            });
-
-            // Extraer el token de response.data.datos.accessToken
-            const resBody = response.data;
-            const token = resBody?.datos?.accessToken || resBody?.accessToken || resBody?.access_token || resBody?.token;
-
-            if (token && typeof token === 'string') {
-                // Invocamos la función del AuthContext para actualizar el estado global de React
-                login(token);
-
-                // Configurar la cabecera por defecto en Axios
-                api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
-                // Navegar a la sala de lotes
-                navigate('/lotes');
-            } else {
-                setErrorServidor('El servidor devolvió respuesta 200 pero no se encontró la credencial JWT en datos.accessToken.');
-            }
-        } catch (err: any) {
-            // Extraer el mensaje devuelto por NestJS (puede ser string o Array de strings)
-            const respuestaBackend = err.response?.data?.message;
-
-            if (respuestaBackend) {
-                if (Array.isArray(respuestaBackend)) {
-                    // Si NestJS devuelve un arreglo de errores de validación DTO
-                    setErrorServidor(respuestaBackend.join(' • '));
-                } else {
-                    // Si NestJS devuelve un mensaje directo en texto
-                    setErrorServidor(respuestaBackend);
-                }
-            } else if (err.response?.status === 401) {
-                setErrorServidor('Correo o contraseña incorrectos. Verifique sus credenciales.');
-            } else if (!err.response) {
-                setErrorServidor('No se pudo establecer conexión con el servidor central de GavelHub.');
-            } else {
-                setErrorServidor('Ocurrió un error inesperado al procesar la solicitud.');
-            }
-        } finally {
-            setCargando(false);
-        }
+        await ejecutarLogin({
+            correo: correo.trim(),
+            password: contrasena,
+        });
     };
 
     return (
@@ -176,7 +131,13 @@ export const LoginPage: React.FC = () => {
                             tiempo real.
                         </p>
 
-                        {/* Banner de error proveniente del servidor o de red */}
+                        {avisoSesion && (
+                            <div className="auth-field-error-box" style={{ marginBottom: '16px', padding: '12px' }}>
+                                <span>[!]</span>
+                                <span>{avisoSesion}</span>
+                            </div>
+                        )}
+
                         {errorServidor && (
                             <div className="auth-field-error-box" style={{ marginBottom: '16px', padding: '12px' }}>
                                 <span>[!]</span>
@@ -287,7 +248,9 @@ export const LoginPage: React.FC = () => {
 
                             {/* Botón Entrar */}
                             <button type="submit" className="auth-btn-gold" disabled={cargando}>
-                                <span>{cargando ? 'Verificando credenciales...' : 'Entrar a mi cuenta'}</span>
+                                <span>
+                                    {cargando ? 'Verificando credenciales...' : 'Entrar a mi cuenta'}
+                                </span>
                                 <span>→</span>
                             </button>
 
@@ -295,7 +258,11 @@ export const LoginPage: React.FC = () => {
                                 <span>¿Eres nuevo en GavelHub?</span>
                             </div>
 
-                            <Link to="/registro" className="auth-btn-secondary">
+                            <Link
+                                to="/registro"
+                                state={{ from: rutaDestino }}
+                                className="auth-btn-secondary"
+                            >
                                 <span>Crear una cuenta de participante</span>
                             </Link>
                         </form>

@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { useRegistro } from '../hooks/useRegistro';
 import '../css/RegistroPage.css';
 
 export const RegistroPage: React.FC = () => {
-    const navigate = useNavigate();
+    const { cargando, errorServidor, rutaDestino, ejecutarRegistro, limpiarError } = useRegistro();
 
     const [nombre, setNombre] = useState('');
     const [correo, setCorreo] = useState('');
@@ -60,10 +61,16 @@ export const RegistroPage: React.FC = () => {
         return Object.keys(nuevosErrores).length === 0;
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        limpiarError();
+
         if (!validarFormulario()) return;
-        navigate('/lotes');
+
+        await ejecutarRegistro({
+            correo: correo.trim(),
+            password: contrasena,
+        });
     };
 
     return (
@@ -154,6 +161,13 @@ export const RegistroPage: React.FC = () => {
                             Completa tus datos para habilitar tu paleta digital de postor.
                         </p>
 
+                        {errorServidor && (
+                            <div className="auth-field-error-box" style={{ marginBottom: '16px', padding: '12px' }}>
+                                <span>[!]</span>
+                                <span>{errorServidor}</span>
+                            </div>
+                        )}
+
                         <form className="auth-form-body" onSubmit={handleSubmit} noValidate>
                             {/* Campo: Nombre Completo */}
                             <div>
@@ -180,6 +194,7 @@ export const RegistroPage: React.FC = () => {
                                         className="auth-input-box__input"
                                         placeholder="Nombre y apellidos como en tu identificación oficial"
                                         value={nombre}
+                                        disabled={cargando}
                                         onChange={(e) => {
                                             setNombre(e.target.value);
                                             if (errores.nombre) setErrores({ ...errores, nombre: undefined });
@@ -216,6 +231,7 @@ export const RegistroPage: React.FC = () => {
                                         className="auth-input-box__input"
                                         placeholder="carlos.mendoza@arte.mx"
                                         value={correo}
+                                        disabled={cargando}
                                         onChange={(e) => {
                                             setCorreo(e.target.value);
                                             if (errores.correo) setErrores({ ...errores, correo: undefined });
@@ -255,6 +271,7 @@ export const RegistroPage: React.FC = () => {
                                         className="auth-input-box__input"
                                         placeholder="••••••••••••••"
                                         value={contrasena}
+                                        disabled={cargando}
                                         onChange={(e) => {
                                             setContrasena(e.target.value);
                                             if (errores.contrasena)
@@ -331,6 +348,7 @@ export const RegistroPage: React.FC = () => {
                                         className="auth-input-box__input"
                                         placeholder="••••••••••••••"
                                         value={confirmarContrasena}
+                                        disabled={cargando}
                                         onChange={(e) => {
                                             setConfirmarContrasena(e.target.value);
                                             if (errores.confirmarContrasena)
@@ -356,6 +374,7 @@ export const RegistroPage: React.FC = () => {
                                     <input
                                         type="checkbox"
                                         checked={aceptaTerminos}
+                                        disabled={cargando}
                                         onChange={(e) => {
                                             setAceptaTerminos(e.target.checked);
                                             if (errores.terminos)
@@ -376,13 +395,21 @@ export const RegistroPage: React.FC = () => {
                             </div>
 
                             {/* Botón de envío */}
-                            <button type="submit" className="auth-btn-gold">
-                                <span>Crear cuenta y habilitar paleta</span>
+                            <button type="submit" className="auth-btn-gold" disabled={cargando}>
+                                <span>
+                                    {cargando
+                                        ? 'Habilitando paleta digital...'
+                                        : 'Crear cuenta y habilitar paleta'}
+                                </span>
                             </button>
 
                             <div className="auth-switch-text">
                                 ¿Ya tienes cuenta?
-                                <Link to="/login" className="auth-switch-link">
+                                <Link
+                                    to="/login"
+                                    state={{ from: rutaDestino }}
+                                    className="auth-switch-link"
+                                >
                                     Inicia sesión aquí
                                 </Link>
                             </div>
