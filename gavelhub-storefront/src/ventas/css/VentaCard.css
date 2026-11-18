@@ -1,0 +1,57 @@
+.venta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: 1.5rem;
+}
+
+.venta-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background: var(--color-surface-high);
+  box-shadow: var(--shadow-sm);
+}
+
+.venta-card__media { position: relative; aspect-ratio: 4 / 3; background: var(--color-surface-subtle); }
+.venta-card__image { width: 100%; height: 100%; object-fit: cover; display: block; }
+.venta-card__placeholder { height: 100%; display: grid; place-items: center; color: var(--color-text-muted); font-size: 0.9rem; }
+
+.venta-card__badge {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: #fff;
+  border: 1px solid var(--color-border);
+}
+.venta-card__badge--pendiente { color: #92400e; background: #fef3c7; border-color: #fde68a; }
+.venta-card__badge--pagado { color: #166534; background: #dcfce7; border-color: #bbf7d0; }
+.venta-card__badge--cancelado { color: #991b1b; background: #fee2e2; border-color: #fecaca; }
+
+.venta-card__body { flex: 1; display: flex; flex-direction: column; gap: 0.75rem; padding: 1.1rem 1.25rem; }
+.venta-card__title { margin: 0; font-family: var(--font-serif); font-size: 1.2rem; color: var(--color-primary); }
+.venta-card__amount { display: flex; flex-direction: column; }
+.venta-card__amount-label { font-size: 0.75rem; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.venta-card__amount-value { font-size: 1.4rem; font-weight: 700; color: var(--color-primary); }
+.venta-card__note { margin: 0; font-size: 0.88rem; line-height: 1.5; color: var(--color-text-muted); }
+
+.venta-card__footer { padding: 0 1.25rem 1.25rem; }
+.venta-card__action {
+  width: 100%;
+  height: 42px;
+  border: 1px solid var(--color-primary);
+  border-radius: 8px;
+  background: var(--color-primary);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+.venta-card__action:hover { background: var(--color-primary-hover); }
+
+/* El enlace "Explorar lotes" del estado vacío usa el estilo del botón de reintentar */
+a.btn-retry { text-decoration: none; }
