@@ -1,56 +1,65 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ventasService } from '../services/ventasService';
-import { listarLotes } from '../../lotes/services/lotesService';
-import { useAuth } from '../../features/auth/context/AuthContext';
-import { LoteCard } from '../../lotes/components/LoteCard';
-import type { Lote } from '../../lotes/types/lote';
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { AlertTriangle, RefreshCw, Trophy } from 'lucide-react';
+import { useMisVentas } from '../hooks/useMisVentas';
+import { VentaCard } from '../components/VentaCard';
 import '../../lotes/css/ExplorarLotesPage.css';
 
 export const MisGanadosPage: React.FC = () => {
-  const { estaAutenticado } = useAuth();
   const navigate = useNavigate();
-  const [lotes, setLotes] = useState<Lote[]>([]);
-  const [cargando, setCargando] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!estaAutenticado) {
-      setCargando(false);
-      return;
-    }
-    const cargar = async () => {
-      try {
-        const ventas = await ventasService.listarMisLotes();
-        const todos = await listarLotes();
-        const ids = new Set((Array.isArray(ventas) ? ventas : []).map((venta: { loteId: string }) => venta.loteId));
-        setLotes((Array.isArray(todos) ? todos : []).filter((lote: Lote) => ids.has(lote.id)));
-        setError(null);
-      } catch {
-        setError('No fue posible cargar tus lotes ganados.');
-      } finally {
-        setCargando(false);
-      }
-    };
-    void cargar();
-  }, [estaAutenticado]);
+  const { ventas, cargando, error, recargar } = useMisVentas();
 
   return (
     <div className="explorar-lotes-container">
       <header className="catalog-header">
         <h1 className="catalog-header__title">Mis lotes ganados</h1>
-        <p className="catalog-header__subtitle">Subastas adjudicadas a tu cuenta.</p>
+        <p className="catalog-header__subtitle">
+          Las subastas que se adjudicaron a tu cuenta y el estado de su pago.
+        </p>
       </header>
-      {!estaAutenticado && <div className="catalog-state catalog-state--empty"><h3>Inicia sesión para consultar tus adjudicaciones</h3></div>}
-      {cargando && estaAutenticado && <div className="catalog-state"><p>Cargando adjudicaciones...</p></div>}
-      {!cargando && error && <div className="catalog-state catalog-state--error"><p>{error}</p></div>}
-      {!cargando && estaAutenticado && !error && lotes.length === 0 && (
-        <div className="catalog-state catalog-state--empty"><h3>Aún no tienes lotes ganados</h3></div>
+
+      {/* 1. CARGANDO */}
+      {cargando && (
+        <div className="catalog-state catalog-state--loading">
+          <div className="spinner"></div>
+          <p>Cargando tus lotes ganados...</p>
+        </div>
       )}
-      {!cargando && estaAutenticado && !error && lotes.length > 0 && (
-        <div className="lot-grid">
-          {lotes.map((lote) => (
-            <LoteCard key={lote.id} lote={lote} onVerDetalle={(id) => navigate(`/lotes/${id}`)} onToggleFavorito={() => undefined} />
+
+      {/* 2. ERROR */}
+      {!cargando && error && (
+        <div className="catalog-state catalog-state--error">
+          <div className="catalog-state__icon"><AlertTriangle size={26} /></div>
+          <div className="catalog-state__copy">
+            <span className="catalog-state__eyebrow">No se pudo completar la consulta</span>
+            <h3>Tus lotes ganados no pudieron cargarse</h3>
+            <p>{error}</p>
+            <button type="button" className="btn-retry" onClick={() => void recargar()}>
+              <RefreshCw size={16} />
+              Reintentar
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 3. VACÍO */}
+      {!cargando && !error && ventas.length === 0 && (
+        <div className="catalog-state catalog-state--empty">
+          <span className="catalog-state__icon"><Trophy size={22} /></span>
+          <h3>Aún no has ganado ninguna subasta</h3>
+          <p>
+            Cuando una subasta se adjudique a tu cuenta, aparecerá aquí con el estado de su pago.
+            Explora los lotes abiertos y haz tu primera oferta.
+          </p>
+          <Link to="/lotes" className="btn-retry">Explorar lotes</Link>
+        </div>
+      )}
+
+      {/* 4. CON DATOS */}
+      {!cargando && !error && ventas.length > 0 && (
+        <div className="venta-grid">
+          {ventas.map((venta) => (
+            <VentaCard key={venta.id} venta={venta} onVerLote={(id) => navigate(`/lotes/${id}`)} />
           ))}
         </div>
       )}
