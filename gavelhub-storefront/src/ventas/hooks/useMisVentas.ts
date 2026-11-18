@@ -14,12 +14,13 @@ function mensajeAmigable(e: unknown): string {
   return 'Ocurrió un problema al cargar tus lotes ganados. Inténtalo de nuevo.';
 }
 
-export function useMisVentas() {
+export function useMisVentas(habilitado: boolean) {
   const [ventas, setVentas] = useState<VentaConDetalle[]>([]);
-  const [cargando, setCargando] = useState(true);
+  const [cargando, setCargando] = useState(habilitado);
   const [error, setError] = useState<string | null>(null);
 
   const cargar = useCallback(async () => {
+    if (!habilitado) return;
     setCargando(true);
     setError(null);
     try {
@@ -29,7 +30,7 @@ export function useMisVentas() {
     } finally {
       setCargando(false);
     }
-  }, []);
+  }, [habilitado]);
 
   useEffect(() => {
     void cargar();

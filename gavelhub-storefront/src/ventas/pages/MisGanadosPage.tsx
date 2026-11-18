@@ -1,13 +1,15 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AlertTriangle, RefreshCw, Trophy } from 'lucide-react';
+import { useAuth } from '../../features/auth/context/AuthContext';
 import { useMisVentas } from '../hooks/useMisVentas';
 import { VentaCard } from '../components/VentaCard';
 import '../../lotes/css/ExplorarLotesPage.css';
 
 export const MisGanadosPage: React.FC = () => {
   const navigate = useNavigate();
-  const { ventas, cargando, error, recargar } = useMisVentas();
+  const { estaAutenticado } = useAuth();
+  const { ventas, cargando, error, recargar } = useMisVentas(estaAutenticado);
 
   return (
     <div className="explorar-lotes-container">
@@ -18,8 +20,15 @@ export const MisGanadosPage: React.FC = () => {
         </p>
       </header>
 
+      {/* 0. SIN SESIÓN */}
+      {!estaAutenticado && (
+        <div className="catalog-state catalog-state--empty">
+          <h3>Inicia sesión para consultar tus adjudicaciones</h3>
+        </div>
+      )}
+
       {/* 1. CARGANDO */}
-      {cargando && (
+      {estaAutenticado && cargando && (
         <div className="catalog-state catalog-state--loading">
           <div className="spinner"></div>
           <p>Cargando tus lotes ganados...</p>
@@ -27,7 +36,7 @@ export const MisGanadosPage: React.FC = () => {
       )}
 
       {/* 2. ERROR */}
-      {!cargando && error && (
+      {estaAutenticado && !cargando && error && (
         <div className="catalog-state catalog-state--error">
           <div className="catalog-state__icon"><AlertTriangle size={26} /></div>
           <div className="catalog-state__copy">
@@ -43,7 +52,7 @@ export const MisGanadosPage: React.FC = () => {
       )}
 
       {/* 3. VACÍO */}
-      {!cargando && !error && ventas.length === 0 && (
+      {estaAutenticado && !cargando && !error && ventas.length === 0 && (
         <div className="catalog-state catalog-state--empty">
           <span className="catalog-state__icon"><Trophy size={22} /></span>
           <h3>Aún no has ganado ninguna subasta</h3>
@@ -56,7 +65,7 @@ export const MisGanadosPage: React.FC = () => {
       )}
 
       {/* 4. CON DATOS */}
-      {!cargando && !error && ventas.length > 0 && (
+      {estaAutenticado && !cargando && !error && ventas.length > 0 && (
         <div className="venta-grid">
           {ventas.map((venta) => (
             <VentaCard key={venta.id} venta={venta} onVerLote={(id) => navigate(`/lotes/${id}`)} />
