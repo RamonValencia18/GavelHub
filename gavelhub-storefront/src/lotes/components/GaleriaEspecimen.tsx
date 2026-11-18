@@ -4,13 +4,11 @@ import type { LoteMedia } from '../types/lote';
 import './GaleriaEspecimen.css';
 
 interface GaleriaEspecimenProps {
-  numeroLote: string | number;
   descripcion: string;
   mediaList?: LoteMedia[];
 }
 
 export const GaleriaEspecimen: React.FC<GaleriaEspecimenProps> = ({
-  numeroLote,
   descripcion,
   mediaList = [],
 }) => {
@@ -37,9 +35,6 @@ export const GaleriaEspecimen: React.FC<GaleriaEspecimenProps> = ({
           <span>Vista macro 1:1 • Alta resolución</span>
         </div>
 
-        <div className="specimen-gallery__lot-number">
-          Lote {numeroLote}
-        </div>
       </div>
 
       {mediaList.length > 0 && (

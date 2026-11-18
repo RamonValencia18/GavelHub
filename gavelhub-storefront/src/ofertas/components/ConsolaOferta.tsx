@@ -117,7 +117,6 @@ export const ConsolaOferta: React.FC<ConsolaOfertaProps> = ({
           <span className="pulse-dot"></span>
           <span>{estaCerrado ? 'Subasta Finalizada' : 'Subasta en curso'}</span>
         </div>
-        <span className="bidding-console__lot-id">Lote {id.slice(0, 8)}</span>
       </div>
 
       <div className="bidding-console__current-price">

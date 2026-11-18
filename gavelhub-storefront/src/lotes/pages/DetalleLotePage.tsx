@@ -88,7 +88,7 @@ export const DetalleLotePage: React.FC = () => {
         <span className="breadcrumbs__separator">›</span>
         <Link to="/lotes" className="breadcrumbs__link">Explorar</Link>
         <span className="breadcrumbs__separator">›</span>
-        <span className="breadcrumbs__current">Lote {id}</span>
+        <span className="breadcrumbs__current">Detalle del lote</span>
       </nav>
 
       {/* BANNER DE CONFIRMACIÓN DE PUJA EXITOSA */}
@@ -161,7 +161,6 @@ export const DetalleLotePage: React.FC = () => {
           {/* Columna Izquierda (~65%): Galería, Descripción e Historial Auditable */}
           <div className="lote-detalle-left">
             <GaleriaEspecimen
-              numeroLote={lote.id}
               descripcion={lote.descripcion}
               mediaList={lote.mediaList || []}
             />
