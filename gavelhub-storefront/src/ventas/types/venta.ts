@@ -12,3 +12,7 @@ export interface Venta {
   loteId: string;
   lote?: Lote;
 }
+
+export interface VentaConDetalle extends Venta {
+  monto?: number;
+}
