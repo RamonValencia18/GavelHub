@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { type AxiosResponse } from 'axios';
 
 // La URL base es configurable mediante variables de entorno (Vite)
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
@@ -9,6 +9,27 @@ export const api = axios.create({
     'Content-Type': 'application/json',
   },
 });
+
+export interface RespuestaUniforme<T> {
+  exito: boolean;
+  datos: T;
+  timestamp: string;
+}
+
+export function obtenerDatos<T>(respuesta: AxiosResponse<T | RespuestaUniforme<T>>): T {
+  const contenido = respuesta.data;
+
+  if (
+    contenido &&
+    typeof contenido === 'object' &&
+    'exito' in contenido &&
+    'datos' in contenido
+  ) {
+    return contenido.datos;
+  }
+
+  return contenido as T;
+}
 
 /**
  * Interceptor de Peticiones:
@@ -32,14 +53,7 @@ api.interceptors.request.use(
  */
 api.interceptors.response.use(
   (response) => {
-    if (
-      response.data &&
-      typeof response.data === 'object' &&
-      'exito' in response.data &&
-      'datos' in response.data
-    ) {
-      response.data = response.data.datos;
-    }
+    response.data = obtenerDatos(response);
     return response;
   },
   (error) => {
