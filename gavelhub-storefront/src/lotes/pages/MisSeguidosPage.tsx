@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { api } from '../../common/api/client';
+import { listarLotes } from '../services/lotesService';
 import { LoteCard } from '../components/LoteCard';
 import type { Lote } from '../types/lote';
 import '../css/ExplorarLotesPage.css';
@@ -22,9 +22,8 @@ export const MisSeguidosPage: React.FC = () => {
           setLotes([]);
           return;
         }
-        const respuesta = await api.get('/lotes');
-        const datos = respuesta.data?.datos ?? respuesta.data;
-        setLotes((Array.isArray(datos) ? datos : []).filter((lote: Lote) => ids.includes(lote.id)));
+        const datos = await listarLotes();
+        setLotes(datos.filter((lote: Lote) => ids.includes(lote.id)));
         setError(null);
       } catch {
         setError('No fue posible cargar tus lotes seguidos.');

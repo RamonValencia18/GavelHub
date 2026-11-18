@@ -1,4 +1,4 @@
-import { api } from '../../common/api/client';
+import { api, obtenerDatos } from '../../common/api/client';
 import type { Oferta } from '../types/oferta';
 
 export interface CrearOfertaDto {
@@ -11,9 +11,9 @@ export const ofertasService = {
    * GET /api/lotes/:loteId/ofertas
    */
   async obtenerHistorialPorLote(loteId: string): Promise<Oferta[]> {
-    const response = await api.get<Oferta[]>(`/api/lotes/${loteId}/ofertas`);
+    const response = await api.get<Oferta[]>(`/lotes/${loteId}/ofertas`);
     // Si el RespuestaUniformeInterceptor envuelve la data, Axios o el interceptor la entregan
-    return response.data;
+    return obtenerDatos(response);
   },
 
   /**
@@ -27,7 +27,7 @@ export const ofertasService = {
       const response = await api.post<Oferta>(`/lotes/${loteId}/ofertas`, {
         cantidad,
       });
-      return response.data;
+      return obtenerDatos(response);
     } catch (error: any) {
       // Manejo estricto de excepciones lanzadas por OfertasController
       if (error.response) {

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { api } from '../../common/api/client';
+import { ventasService } from '../services/ventasService';
+import { listarLotes } from '../../lotes/services/lotesService';
 import { useAuth } from '../../features/auth/context/AuthContext';
 import { LoteCard } from '../../lotes/components/LoteCard';
 import type { Lote } from '../../lotes/types/lote';
@@ -20,10 +21,8 @@ export const MisGanadosPage: React.FC = () => {
     }
     const cargar = async () => {
       try {
-        const ventasRespuesta = await api.get('/ventas/mis-lotes');
-        const ventas = ventasRespuesta.data?.datos ?? ventasRespuesta.data;
-        const lotesRespuesta = await api.get('/lotes');
-        const todos = lotesRespuesta.data?.datos ?? lotesRespuesta.data;
+        const ventas = await ventasService.listarMisLotes();
+        const todos = await listarLotes();
         const ids = new Set((Array.isArray(ventas) ? ventas : []).map((venta: { loteId: string }) => venta.loteId));
         setLotes((Array.isArray(todos) ? todos : []).filter((lote: Lote) => ids.has(lote.id)));
         setError(null);

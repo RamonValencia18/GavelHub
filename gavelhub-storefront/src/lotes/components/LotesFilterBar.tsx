@@ -36,15 +36,7 @@ export const LotesFilterBar: React.FC<LotesFilterBarProps> = ({
           onChange={(e) => onBusquedaChange(e.target.value)}
         />
 
-        <select
-          className="catalog-filters__select"
-          value={orden}
-          onChange={(e) => onOrdenChange(e.target.value)}
-        >
-          <option value="proximo">Cierre más próximo</option>
-          <option value="oferta-asc">Precio: menor a mayor</option>
-          <option value="oferta-desc">Precio: mayor a menor</option>
-        </select>
+        
       </div>
 
       <div className="catalog-filters__chips">

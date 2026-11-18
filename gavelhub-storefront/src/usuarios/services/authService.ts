@@ -1,4 +1,4 @@
-import { api } from '../../common/api/client';
+import { api, obtenerDatos } from '../../common/api/client';
 import type { Usuario } from '../types/usuario';
 
 export interface AuthCredentialsPayload {
@@ -18,7 +18,7 @@ export const authService = {
             password: credenciales.password,
         });
 
-        const data = response.data;
+        const data = obtenerDatos(response);
         const token = data?.accessToken || data?.token;
 
         if (!token || typeof token !== 'string') {
@@ -45,7 +45,7 @@ export const authService = {
             rol: 'ADMIN' | 'USER';
         }>('/auth/perfil');
 
-        const data = response.data;
+        const data = obtenerDatos(response);
         return {
             id: data.id || data.sub || '',
             correo: data.correo,
